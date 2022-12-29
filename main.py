@@ -13,7 +13,14 @@ class Position:
     y: float
 
 
-Human = (Name, Position)
+Human = (
+    Name,
+    Position
+)
+
+
+class Junk(int):
+    pass
 
 
 @dataclass
@@ -26,6 +33,7 @@ def my_system(
         commands: Commands,
         resolution: Resolution,
         names_at: Entities(Human),
+        junks: Entities(Junk),
 ):
     print("My Resolution: {}".format(resolution))
     new_entity = Entity(
@@ -40,6 +48,10 @@ def my_system(
         print(f'Hi, {name}, you at {position}')
         position.x += 1
         position.y += 1
+    for junk in junks:
+        print("Some junk: {}".format(junk[0]))
+    commands.drop_entities(Junk)
+    commands.drop_entities_with_expression(lambda entity: entity[Name] == Name("Artyom"))
 
 
 def my_plugin(distributor: Distributor):
@@ -47,9 +59,18 @@ def my_plugin(distributor: Distributor):
         Name("Artyom"),
         Position(0.0, 0.0),
     )
-    distributor.register_entity(Entity(*human_artyom))
+    human_ilya: Human = (
+        Name("Ilya"),
+        Position(2.0, 2.0),
+    )
+    distributor.register_entity(
+        Entity(*human_artyom),
+        Entity(*human_ilya),
+        Entity(Junk(0)),
+    )
     distributor.register_systems(my_system)
     distributor.register_resources(Resolution(1920, 1080))
+
 
 def main():
     print("Starting Distributor Example\n")
