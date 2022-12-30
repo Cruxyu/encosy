@@ -142,7 +142,7 @@ class Distributor:
             if system_conf.command:
                 key_word_arguments["commands"] = self.__commands
             for resource, name in system_conf.resources.items():
-                key_word_arguments[name] = resource
+                key_word_arguments[name] = self.__resources[resource]
             for component_types, name in system_conf.components.items():
                 entities = self.__query_entities(*component_types)
                 key_word_arguments[name] = [[entity[component_type] for component_type in component_types]
