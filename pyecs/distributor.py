@@ -1,14 +1,23 @@
-from collections import defaultdict
 from inspect import signature
 from typing import Callable, get_args, get_origin, Any
-
-import setuptools.package_index
-
-from .entity import Entity
 from dataclasses import dataclass
 
 
 Entities = lambda x: list[tuple[x]]
+
+
+class Entity:
+    def __init__(self, *components):
+        self.components = {type(com): com for com in components}
+
+    def __getitem__(self, key):
+        return self.components[key]
+
+    def __contains__(self, key):
+        return key in self.components
+
+    def __repr__(self):
+        return "Entity with components {}".format(tuple(self.components.values()))
 
 
 @dataclass

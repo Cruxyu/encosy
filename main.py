@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from pyecs.distributor import Distributor, Entities, Commands
-from pyecs.entity import Entity
+from pyecs import Distributor, Entities, Commands, Entity
 
 
 class Name(str):
-    pass
+    def __repr__(self):
+        return "Name({})".format(self)
 
 
 @dataclass
