@@ -141,22 +141,25 @@ class Distributor:
     def resume(self):
         self.__stop = False
 
+    def __extract_system_input(self, system_conf: SystemConf):
+        key_word_arguments = {}
+        if system_conf.command:
+            key_word_arguments["commands"] = self.__commands
+        for resource, name in system_conf.resources.items():
+            key_word_arguments[name] = self.__resources[resource]
+        for component_types, name in system_conf.components.items():
+            entities = self.__query_entities(*component_types)
+            key_word_arguments[name] = [[entity[component_type] for component_type in component_types]
+                                        for entity in entities]
+        return key_word_arguments
+
     def tick(self):
         if self.__stop:
             return False
         for system_conf in self.__systems_conf.values():
             if system_conf.system in self.__systems_stop:
                 continue
-            key_word_arguments = {}
-            if system_conf.command:
-                key_word_arguments["commands"] = self.__commands
-            for resource, name in system_conf.resources.items():
-                key_word_arguments[name] = self.__resources[resource]
-            for component_types, name in system_conf.components.items():
-                entities = self.__query_entities(*component_types)
-                key_word_arguments[name] = [[entity[component_type] for component_type in component_types]
-                                            for entity in entities]
-            system_conf.system(**key_word_arguments)
+            system_conf.system(**self.__extract_system_input(system_conf))
         self.__run_scheduled_drop_systems()
         return True
 
