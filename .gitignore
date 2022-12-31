@@ -1,3 +1,8 @@
 /poetry.lock
 .idea
+.coverage
+htmlcov
+site
+coverage.xml
 notebooks/test.ipynb
+**/.pytest_cache/

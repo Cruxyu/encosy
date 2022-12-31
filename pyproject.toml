@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyecs"
-version = "0.9.0"
+version = "0.9.5"
 description = "ECS python implementation"
 authors = ["baranynah <a.kovalenko.ai@yandex.ru>"]
 readme = "README.md"
