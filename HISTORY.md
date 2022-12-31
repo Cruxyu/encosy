@@ -4,6 +4,7 @@ Changelog
 
 (unreleased)
 ------------
+- Release: version  🚀 [baranynah]
 - Refactor reformat and prepare docs and types. [baranynah]
 - Refactor reformat and prepare docs and types. [baranynah]
 - Release: version  🚀 [baranynah]
