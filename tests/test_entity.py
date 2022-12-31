@@ -8,6 +8,7 @@ class TestEntity:
         class MyComponent:
             integer: int
             string: str
+
         integer = 10
         string = "row"
         entity = Entity(MyComponent(integer, string))
@@ -20,6 +21,7 @@ class TestEntity:
         class MyComponent1:
             integer: int
             string: str
+
         integer = 10
         string = "row"
         component1 = MyComponent1(integer, string)
@@ -35,6 +37,10 @@ class TestEntity:
 
         entity = Entity(component1, component2)
 
-        assert MyComponent1 in entity and MyComponent2 in entity, "Not all components in entity"
+        assert (
+            MyComponent1 in entity and MyComponent2 in entity
+        ), "Not all components in entity"
         assert len(entity) == 2, "Length of entity is not equal 2"
-        assert entity[MyComponent1] and entity[MyComponent2], "Can't get some of the required components"
+        assert (
+            entity[MyComponent1] and entity[MyComponent2]
+        ), "Can't get some of the required components"
