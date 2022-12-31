@@ -8,7 +8,10 @@ Entities = lambda x: list[tuple[x]]
 
 class Entity:
     def __init__(self, *components):
-        self.components = {type(com): com for com in components}
+        types = [type(component) for component in components]
+        if len(types) != len(set(types)):
+            raise ValueError("Duplicated components are not allowed and leads to overriding")
+        self.components: dict[type, Any] = {type(com): com for com in components}
 
     def __getitem__(self, key):
         return self.components[key]
