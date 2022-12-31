@@ -124,8 +124,7 @@ def main():
         Entity(Name("Artyom"))
     )
     print("Starting...")
-    while distributor.tick():
-        pass
+    distributor.run()
     print("Stopping...")
 
 
