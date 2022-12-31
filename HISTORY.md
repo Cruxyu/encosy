@@ -4,6 +4,9 @@ Changelog
 
 (unreleased)
 ------------
+- Refactor reformat and prepare docs and types. [baranynah]
+- Refactor reformat and prepare docs and types. [baranynah]
+- Release: version  🚀 [baranynah]
 - Added simple_single and simple_multiple tests for Entity class.
   [baranynah]
 - Added len method for entity and __ for components. [baranynah]
