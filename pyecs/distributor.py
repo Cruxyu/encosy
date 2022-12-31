@@ -33,6 +33,7 @@ class Distributor:
         self.__systems_conf: dict[Callable, SystemConf] = {}
         self.__systems_to_drop: dict[Callable, None] = {}
         self.__systems_stop: dict[Callable, None] = {}
+        self.__stop = False
 
         self.__idx = 1
         self.__entities: dict[int, Entity] = {}
@@ -134,7 +135,15 @@ class Distributor:
         self.__drop_systems(*self.__systems_to_drop.keys())
         self.__systems_to_drop = {}
 
-    def dispense(self):
+    def pause(self):
+        self.__stop = True
+
+    def resume(self):
+        self.__stop = False
+
+    def tick(self):
+        if self.__stop:
+            return False
         for system_conf in self.__systems_conf.values():
             if system_conf.system in self.__systems_stop:
                 continue
@@ -149,6 +158,11 @@ class Distributor:
                                             for entity in entities]
             system_conf.system(**key_word_arguments)
         self.__run_scheduled_drop_systems()
+        return True
+
+    def run(self):
+        while self.tick():
+            pass
 
     def __repr__(self):
         return "Dispenser\n    Systems: {}\n    Entities: {}\n    " \
@@ -175,4 +189,10 @@ class Commands:
         self.__distributor.start_systems(*systems)
 
     def schedule_drop_systems(self, *systems):
-        self.schedule_drop_systems(*systems)
+        self.__distributor.schedule_drop_systems(*systems)
+
+    def pause_distributor(self):
+        self.__distributor.pause()
+
+    def resume_distributor(self):
+        self.__distributor.resume()
