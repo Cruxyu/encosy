@@ -80,7 +80,7 @@ def main():
     ticks = 3
     for i in range(ticks):
         print("Tick: {}".format(i))
-        distributor.dispense()
+        distributor.tick()
         print()
     print(distributor, end="\n\n")
 
