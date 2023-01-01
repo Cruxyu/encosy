@@ -56,6 +56,15 @@ class Distributor:
         self.__resources: dict[type, Any] = {}
         self.__commands = Commands(self)
 
+    def get_systems(self):
+        return self.__systems_conf
+
+    def get_entities(self):
+        return self.__entities
+
+    def get_resources(self):
+        return self.__resources
+
     def __query_entities(self, *component_types: type):
         """
 
