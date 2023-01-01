@@ -2,6 +2,26 @@ Changelog
 =========
 
 
+(unreleased)
+------------
+- Supress errors (only necessary) emitting by mypy and flake8.
+  [baranynah]
+- Format tests. [baranynah]
+- Fix workflow. [baranynah]
+- New default workflow. [baranynah]
+- Accessors for distributor. [baranynah]
+- New tests. [baranynah]
+- Reformat example to utilize new return self. [baranynah]
+- New version 0.9.9. [baranynah]
+- Fix make release as it cannot take file data into variable and move it
+  outside sub-make. [baranynah]
+
+
+0.9.8 (2023-01-01)
+------------------
+- Release: version 0.9.8 🚀 [baranynah]
+
+
 0.9.6 (2023-01-01)
 ------------------
 - Added example workflow. [baranynah]
