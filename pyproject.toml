@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "encosy"
-version = "0.9.9"
+version = "1.0.0"
 description = "ECS python implementation"
 authors = ["Cruxyu <a.kovalenko.ai@gmail.com>"]
 readme = "README.md"
