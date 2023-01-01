@@ -5,6 +5,7 @@ Changelog
 (unreleased)
 ------------
 - Release: version 1.2.1 🚀 [baranynah]
+- Release: version 1.2.1 🚀 [baranynah]
 
 
 1.2.1 (2023-01-01)
