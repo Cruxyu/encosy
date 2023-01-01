@@ -2,6 +2,9 @@
 ENV_PREFIX=$(shell python -c "if __import__('pathlib').Path('.venv/bin/pip').exists(): print('.venv/bin/')")
 USING_POETRY=$(shell grep "tool.poetry" pyproject.toml && echo "yes")
 
+.EXPORT_ALL_VARIABLES:
+TAG = $(shell cat encosy/VERSION)
+
 .PHONY: help
 help:             ## Show the help.
 	@echo "Usage: make <target>"
@@ -72,9 +75,9 @@ clean:            ## Clean unused files.
 .PHONY: release
 release:          ## Create a new tag for release.
 	@echo "WARNING: This operation will create s version tag and push to github"
-	@TAG=$(<encosy/VERSION) && echo "Version? (provide the next x.y.z semver) : ${TAG}"
+	@echo "Version? (provide the next x.y.z semver) : ${TAG}"
 	@poetry run gitchangelog > HISTORY.md
-	@git add pyecs/VERSION HISTORY.md
+	@git add encosy/VERSION HISTORY.md
 	@git commit -m "release: version ${TAG} 🚀"
 	@echo "creating git tag : ${TAG}"
 	@git tag ${TAG}
