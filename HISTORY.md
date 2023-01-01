@@ -2,8 +2,28 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+1.2.1 (2023-01-01)
+------------------
+- Update README.md. [Cruxyu]
+- Create CONTRIBUTING.md. [Cruxyu]
+- Merge pull request #2 from Cruxyu/add-license-1. [Cruxyu]
+
+  Create LICENSE
+- Create LICENSE. [Cruxyu]
+- Update issue templates. [Cruxyu]
+- Create SECURITY.md. [Cruxyu]
+- Merge pull request #1 from Cruxyu/add-code-of-conduct-1. [Cruxyu]
+
+  Create CODE_OF_CONDUCT.md
+- Create CODE_OF_CONDUCT.md. [Cruxyu]
+- New version 1.2.1. [baranynah]
+- Document everything and rename Distributor to ControlPanel.
+  [baranynah]
+
+
+1.0.0 (2023-01-01)
+------------------
+- Release: version 1.0.0 🚀 [baranynah]
 - Version 1.0.0. [baranynah]
 - Added more files to ignore (mypy) [baranynah]
 - Added more docs template. [baranynah]
