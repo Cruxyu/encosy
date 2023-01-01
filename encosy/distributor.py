@@ -57,12 +57,24 @@ class Distributor:
         self.__commands = Commands(self)
 
     def get_systems(self):
+        """
+
+        :return:
+        """
         return self.__systems_conf
 
     def get_entities(self):
+        """
+
+        :return:
+        """
         return self.__entities
 
     def get_resources(self):
+        """
+
+        :return:
+        """
         return self.__resources
 
     def __query_entities(self, *component_types: type):
