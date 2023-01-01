@@ -4,6 +4,8 @@ Changelog
 
 (unreleased)
 ------------
+- New version 1.2.2. [baranynah]
+- Release: version 1.2.1 🚀 [baranynah]
 - Release: version 1.2.1 🚀 [baranynah]
 - Release: version 1.2.1 🚀 [baranynah]
 - Release: version 1.2.1 🚀 [baranynah]
