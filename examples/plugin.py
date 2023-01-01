@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from pyecs import Distributor, Entities, Commands, Entity
+from encosy import Distributor, Entities, Commands, Entity
 
 
 class Name(str):

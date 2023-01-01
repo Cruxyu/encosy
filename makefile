@@ -28,20 +28,20 @@ build:          ## Install the project in dev mode.
 
 .PHONY: fmt
 fmt:              ## Format code using black & isort.
-	poetry run python -m isort pyecs/
-	poetry run python -m black -l 79 pyecs/
+	poetry run python -m isort encosy/
+	poetry run python -m black -l 79 encosy/
 	poetry run python -m black -l 79 tests/
 
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
-	poetry run flake8 pyecs/
-	poetry run black -l 79 --check pyecs/
+	poetry run flake8 encosy/
+	poetry run black -l 79 --check encosy/
 	poetry run black -l 79 --check tests/
-	poetry run mypy --ignore-missing-imports pyecs/
+	poetry run mypy --ignore-missing-imports encosy/
 
 .PHONY: test
 test:             ## Run tests and generate coverage report.
-	poetry run pytest -v --cov-config .coveragerc --cov=pyecs -l --tb=short --maxfail=1 tests/
+	poetry run pytest -v --cov-config .coveragerc --cov=encosy -l --tb=short --maxfail=1 tests/
 	poetry run coverage xml
 	poetry run coverage html
 
@@ -72,7 +72,7 @@ clean:            ## Clean unused files.
 .PHONY: release
 release:          ## Create a new tag for release.
 	@echo "WARNING: This operation will create s version tag and push to github"
-	@TAG=$(<pyecs/VERSION) && echo "Version? (provide the next x.y.z semver) : ${TAG}"
+	@TAG=$(<encosy/VERSION) && echo "Version? (provide the next x.y.z semver) : ${TAG}"
 	@poetry run gitchangelog > HISTORY.md
 	@git add pyecs/VERSION HISTORY.md
 	@git commit -m "release: version ${TAG} 🚀"

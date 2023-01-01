@@ -1,4 +1,4 @@
-from pyecs import Entity
+from encosy import Entity
 from dataclasses import dataclass
 
 

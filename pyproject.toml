@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "pyecs"
-version = "0.9.5"
+name = "encosy"
+version = "0.9.6"
 description = "ECS python implementation"
 authors = ["baranynah <a.kovalenko.ai@yandex.ru>"]
 readme = "README.md"
 
 packages = [
-    {include = "pyecs", from = "."},
+    {include = "encosy", from = "."},
 ]
 
 [tool.poetry.dependencies]

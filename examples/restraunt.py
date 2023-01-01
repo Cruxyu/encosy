@@ -1,6 +1,6 @@
 from time import sleep
 
-from pyecs import Distributor, Commands, Entity, Entities
+from encosy import Distributor, Commands, Entity, Entities
 from dataclasses import dataclass
 from faker import Faker
 import random
