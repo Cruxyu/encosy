@@ -30,6 +30,7 @@ gitchangelog = "^3.0.4"
 mypy = "^0.991"
 isort = "^5.10.1"
 codecov = "^2.1.12"
+mkdocs-material = "^8.5.11"
 
 
 [build-system]

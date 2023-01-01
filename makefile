@@ -19,13 +19,11 @@ show:             ## Show the current environment.
 install:          ## Install the project in dev mode.
 	@pip install poetry
 	@poetry install
-	@poetry run maturin develop
 
 
 .PHONY: build
 build:          ## Install the project in dev mode.
 	@poetry build
-	@poetry run maturin develop
 
 
 .PHONY: fmt
@@ -74,13 +72,12 @@ clean:            ## Clean unused files.
 .PHONY: release
 release:          ## Create a new tag for release.
 	@echo "WARNING: This operation will create s version tag and push to github"
-	@read -p "Version? (provide the next x.y.z semver) : " TAG
-	@echo "$${TAG}" > pyecs/VERSION
+	@TAG=$(<pyecs/VERSION) && echo "Version? (provide the next x.y.z semver) : ${TAG}"
 	@poetry run gitchangelog > HISTORY.md
 	@git add pyecs/VERSION HISTORY.md
-	@git commit -m "release: version $${TAG} 🚀"
-	@echo "creating git tag : $${TAG}"
-	@git tag $${TAG}
+	@git commit -m "release: version ${TAG} 🚀"
+	@echo "creating git tag : ${TAG}"
+	@git tag ${TAG}
 	@git push -u origin HEAD --tags
 	@echo "Github Actions will detect the new tag and release the new version."
 
@@ -88,4 +85,4 @@ release:          ## Create a new tag for release.
 docs:             ## Build the documentation.
 	@echo "building documentation ..."
 	@poetry run mkdocs build
-	URL="site/index.html"; xdg-open $$URL || sensible-browser $$URL || x-www-browser $$URL || gnome-open $$URL
+	@poetry run mkdocs serve
