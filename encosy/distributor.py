@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from inspect import signature
 from typing import Any, Callable, get_args, get_origin
 
-Entities = lambda x: list[tuple[x]]
+Entities = lambda x: list[tuple[x]]  # type: ignore  # noqa
 
 
 class Entity:
