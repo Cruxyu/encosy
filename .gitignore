@@ -5,4 +5,5 @@ htmlcov
 site
 coverage.xml
 notebooks/test.ipynb
+.mypy_cache
 **/.pytest_cache/
