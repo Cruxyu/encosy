@@ -1,2 +1,2 @@
 # About
-> **Email:** `a.kovalenko.ai@yandex.ru`
+> **Email:** `a.kovalenko.ai@gmail.com`
