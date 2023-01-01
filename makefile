@@ -58,6 +58,8 @@ clean:            ## Clean unused files.
 	@find . -name '__pycache__' -exec rm -rf {} \;
 	@find . -name 'Thumbs.db' -exec rm -f {} \;
 	@find . -name '*~' -exec rm -f {} \;
+	@find . -name 'mprofile_*.dat' -exec rm -f {} \;
+	@find . -name '*.prof' -exec rm -f {} \;
 	@rm -rf .cache
 	@rm -rf .pytest_cache
 	@rm -rf .mypy_cache
