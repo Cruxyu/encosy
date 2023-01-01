@@ -2,8 +2,14 @@ Changelog
 =========
 
 
+(unreleased)
+------------
+- Release: version 1.2.1 🚀 [baranynah]
+
+
 1.2.1 (2023-01-01)
 ------------------
+- Release: version 1.2.1 🚀 [baranynah]
 - Update README.md. [Cruxyu]
 - Create CONTRIBUTING.md. [Cruxyu]
 - Merge pull request #2 from Cruxyu/add-license-1. [Cruxyu]
