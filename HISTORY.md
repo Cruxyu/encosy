@@ -4,6 +4,18 @@ Changelog
 
 (unreleased)
 ------------
+- Version 1.0.0. [baranynah]
+- Added more files to ignore (mypy) [baranynah]
+- Added more docs template. [baranynah]
+- Added several new clean files (.prof and mprof) [baranynah]
+- Remove prints and added CPU profiler. [baranynah]
+- Added memory and cpu tests template and lib. [baranynah]
+- Added installation guide. [baranynah]
+
+
+0.9.9 (2023-01-01)
+------------------
+- Release: version 0.9.9 🚀 [baranynah]
 - Supress errors (only necessary) emitting by mypy and flake8.
   [baranynah]
 - Format tests. [baranynah]
