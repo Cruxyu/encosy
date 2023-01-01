@@ -1,6 +1,6 @@
 from time import sleep
 
-from encosy import Distributor, Commands, Entity, Entities
+from encosy import ControlPanel, Commands, Entity, Entities
 from dataclasses import dataclass
 from faker import Faker
 import random
@@ -88,7 +88,7 @@ def exit_sys(commands: Commands, chairs: Entities(Chair), humans: Entities(Human
 def tick_sys(commands: Commands, ticks: Tick):
     ticks.tick += 1
     if ticks.tick == 5000:
-        commands.pause_distributor()
+        commands.pause_control_panel()
 
 
 def print_sys(tick: Tick, chairs: Entities(Chair), humans: Entities(Human)):
@@ -111,7 +111,7 @@ def sleep_system(sleet_time: SleepTime):
 
 def main():
     # print("Starting...")
-    Distributor().register_resources(
+    ControlPanel().register_resources(
         Tick(0),
         SleepTime(1.0)
     ).register_systems(

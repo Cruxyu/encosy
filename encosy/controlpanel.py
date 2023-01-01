@@ -8,8 +8,11 @@ Entities = lambda x: list[tuple[x]]  # type: ignore  # noqa
 class Entity:
     def __init__(self, *components: Any):
         """
-
-        :param components:
+        Basic class for storing components by their type
+        If duplicated types passed function raise ValueError
+        It is necessary because entity stored as dict with key as type
+        and value as component itself
+        :param components: accumulative of any type component
         """
         types = [type(component) for component in components]
         if len(types) != len(set(types)):
@@ -43,9 +46,11 @@ class SystemConf:
     components: dict[tuple, str]
 
 
-class Distributor:
+class ControlPanel:
     def __init__(self):
-        """ """
+        """
+        ECS control panel
+        """
         self.__systems_conf: dict[Callable, SystemConf] = {}
         self.__systems_to_drop: dict[Callable, None] = {}
         self.__systems_stop: dict[Callable, None] = {}
@@ -56,32 +61,35 @@ class Distributor:
         self.__resources: dict[type, Any] = {}
         self.__commands = Commands(self)
 
-    def get_systems(self):
+    def get_systems(self) -> dict[Callable, SystemConf]:
         """
-
-        :return:
+        Returns systems configuration stored in ControlPanel
+        :return: dict as key=Callable or registered functions
         """
         return self.__systems_conf
 
-    def get_entities(self):
+    def get_entities(self) -> dict[int, Entity]:
         """
-
-        :return:
+        Return registered entities in ControlPanel
+        DO NOT add new values to a dict instead use .register_entities()
+        :return: dict where key=int
         """
         return self.__entities
 
-    def get_resources(self):
+    def get_resources(self) -> dict[type, Any]:
         """
-
-        :return:
+        Return registered resources in ControlPanel
+        :return: dict where key=type
         """
         return self.__resources
 
     def __query_entities(self, *component_types: type):
         """
-
-        :param component_types:
-        :return:
+        Hidden function to query components
+        Returns list of same tuples types where order is defined with
+        the order of component_types
+        :param component_types: types to query components
+        :return: list[tuple[T1,T2, ... TN]]
         """
         entities = []
         for entity in self.__entities.values():
@@ -94,9 +102,12 @@ class Distributor:
 
     def register_systems(self, *systems: Callable[[Any], Any]):
         """
-
-        :param systems:
-        :return:
+        Register any callable.
+        Input params of Callable can contain:
+            commands: Commands (name and type is reserved)
+            resource: Any - same as entity, but only one can exist
+        :param systems: Callable
+        :return: self | ControlPanel
         """
         for system in systems:
             system_conf = SystemConf(
@@ -126,9 +137,10 @@ class Distributor:
 
     def register_resources(self, *resources: Any):
         """
-
-        :param resources:
-        :return:
+        Register resources. Each resource should be unique type
+        as it is accessed through it
+        :param resources: object of eny type
+        :return: self | ControlPanel
         """
         for resource in resources:
             self.__resources[type(resource)] = resource
@@ -136,9 +148,9 @@ class Distributor:
 
     def register_entity(self, *entities: Entity):
         """
-
-        :param entities:
-        :return:
+        Register entity. Each entity assigned a unique integer
+        :param entities: Entity with components
+        :return: self | ControlPanel
         """
         for entity in entities:
             self.__entities[self.__idx] = entity
@@ -147,9 +159,9 @@ class Distributor:
 
     def register_plugins(self, *plugins: Callable[[Any], None]):
         """
-
-        :param plugins:
-        :return:
+        Register plugins. Plugin is a simple function that takes ControlPanel
+        :param plugins: Callable[[ControlPanel]], None]
+        :return: self | ControlPanel
         """
         for plugin in plugins:
             plugin(self)
@@ -157,9 +169,9 @@ class Distributor:
 
     def __drop_systems(self, *systems: Callable[[Any], Any]):
         """
-
-        :param systems:
-        :return:
+        Drop given systems
+        :param systems: Callable
+        :return: self | ControlPanel
         """
         for system in systems:
             if system in self.__systems_conf:
@@ -168,9 +180,10 @@ class Distributor:
 
     def drop_entities(self, *component_types: type):
         """
-
-        :param component_types:
-        :return:
+        Drop entities based on its components types
+        :param component_types: type that entity should contain
+        in order to be dropped
+        :return: self | ControlPanel
         """
         keys_to_del = []
         for key, entity in self.__entities.items():
@@ -187,9 +200,11 @@ class Distributor:
         self, expression: Callable[[Entity], bool]
     ):
         """
-
-        :param expression:
-        :return:
+        Drops entities based on expression of type (entity: Entity) -> bool
+        Ex:
+            lambda entity: Entity[Name] == "MyName"
+        :param expression: Callable[[Entity], bool]
+        :return: self | ControlPanel
         """
         keys_to_del = []
         for key, entity in self.__entities.items():
@@ -204,9 +219,9 @@ class Distributor:
 
     def stop_systems(self, *systems):
         """
-
-        :param systems:
-        :return:
+        Add systems to stop dictionary
+        :param systems: Callable
+        :return: self | ControlPanel
         """
         for system in systems:
             self.__systems_stop[system] = None
@@ -214,9 +229,9 @@ class Distributor:
 
     def start_systems(self, *systems: Callable[[Any], Any]):
         """
-
-        :param systems:
-        :return:
+        Remove systems from stop dictionary
+        :param systems: Callable
+        :return: self | ControlPanel
         """
         for system in systems:
             if system in self.__systems_stop:
@@ -225,9 +240,11 @@ class Distributor:
 
     def schedule_drop_systems(self, *systems: Callable[[Any], Any]):
         """
-
-        :param systems:
-        :return:
+        Schedules drop of a given systems
+        Add system to drop queue and call __run_scheduled_drop_systems
+        at the end of a tick
+        :param systems: Callable
+        :return: self | ControlPanel
         """
         for system in systems:
             self.__systems_to_drop[system] = None
@@ -235,8 +252,8 @@ class Distributor:
 
     def __run_scheduled_drop_systems(self):
         """
-
-        :return:
+        Runs drop on a system drop queue and clear it
+        :return: self | ControlPanel
         """
         self.__drop_systems(*self.__systems_to_drop.keys())
         self.__systems_to_drop = {}
@@ -244,16 +261,18 @@ class Distributor:
 
     def pause(self):
         """
-
-        :return:
+        Set a pause for a tick function (stop = True).
+        stop works as a gate in tick function
+        :return: self | ControlPanel
         """
         self.__stop = True
         return self
 
     def resume(self):
         """
-
-        :return:
+        Set a resume for a tick function (stop = False).
+        stop works as a gate in tick function
+        :return: self | ControlPanel
         """
         self.__stop = False
         return self
@@ -262,11 +281,12 @@ class Distributor:
         self, system_conf: SystemConf
     ) -> dict[str, Any]:
         """
-
-        :param system_conf:
-        :return:
+        Extracts input values for given system and returns basic kwargs
+        If any of the resources does not exist or isn't registered - KeyError
+        :param system_conf: system params
+        :return: dict[str, Any] - aka kwargs
         """
-        key_word_arguments = {}
+        key_word_arguments: dict[str, Any] = {}
         if system_conf.command:
             key_word_arguments["commands"] = self.__commands
         for resource, name in system_conf.resources.items():
@@ -279,10 +299,14 @@ class Distributor:
             ]
         return key_word_arguments
 
-    def tick(self):
+    def tick(self) -> bool:
         """
-
-        :return:
+        Equivalent to one step where each system
+        in a given order (register_system(1->2->3->...) executes
+        with a requested params [Any, Commands, Entities(list[tuple[Any]]])
+        If requested resource does not exist then KeyError raised
+        :return: bool returns False if Dispenser.pause()
+        called to resume call .resume()
         """
         if self.__stop:
             return False
@@ -295,8 +319,10 @@ class Distributor:
 
     def run(self):
         """
-
-        :return:
+        Simple loop for executing ticks until commands.pause()
+        called within any system
+        then after current tick new won't start
+        :return: self | ControlPanel
         """
         while self.tick():
             pass
@@ -312,79 +338,86 @@ class Distributor:
 
 
 class Commands:
-    def __init__(self, distributor: Distributor):
+    def __init__(self, control_panel: ControlPanel):
         """
-
-        :param distributor:
+        Commands layer to use control panel inside a system
+        :param control_panel:
         """
-        self.__distributor = distributor
+        self.__control_panel = control_panel
 
     def register_entity(self, *entities):
         """
-
+        Register entities for control panel
         :param entities:
-        :return:
+        :return: self | Commands
         """
-        self.__distributor.register_entity(*entities)
+        self.__control_panel.register_entity(*entities)
         return self
 
     def drop_entities(self, *components):
         """
-
+        Drop entities by components
         :param components:
-        :return:
+        :return: self | Commands
         """
-        self.__distributor.drop_entities(*components)
+        self.__control_panel.drop_entities(*components)
         return self
 
-    def drop_entities_with_expression(self, expression: Callable):
+    def drop_entities_with_expression(
+        self, expression: Callable[[Entity], bool]
+    ):
         """
-
-        :param expression:
-        :return:
+        Drop entities using expression of type (entity: Entity) -> bool
+        ex:
+            lambda entity: entity[Position].x == 17.0
+                            and entity[Position].y == 21.0
+            where Position is a component of a given entity
+        :param expression: Callable[[Entity], bool]
+        :return: self | Commands
         """
-        self.__distributor.drop_entities_with_expression(expression)
+        self.__control_panel.drop_entities_with_expression(expression)
         return self
 
     def stop_systems(self, *systems):
         """
-
+        Prevents systems from executing
         :param systems:
-        :return:
+        :return: self | Commands
         """
-        self.__distributor.stop_systems(*systems)
+        self.__control_panel.stop_systems(*systems)
         return self
 
     def start_systems(self, *systems):
         """
-
+        Allows systems to be executed
         :param systems:
-        :return:
+        :return: self | Commands
         """
-        self.__distributor.start_systems(*systems)
+        self.__control_panel.start_systems(*systems)
         return self
 
     def schedule_drop_systems(self, *systems):
         """
-
+        Completely remove system, but only after current tick
         :param systems:
-        :return:
+        :return: self | Commands
         """
-        self.__distributor.schedule_drop_systems(*systems)
+        self.__control_panel.schedule_drop_systems(*systems)
         return self
 
-    def pause_distributor(self):
+    def pause_control_panel(self):
         """
-
-        :return:
+        Exits from run at the next tick and prevents tick to be executed
+        until resume_control_panel is called
+        :return: self | Commands
         """
-        self.__distributor.pause()
+        self.__control_panel.pause()
         return self
 
-    def resume_distributor(self):
+    def resume_control_panel(self):
         """
-
-        :return:
+        Resume run but only after control_panel.run() is called
+        :return: self | Commands
         """
-        self.__distributor.resume()
+        self.__control_panel.resume()
         return self

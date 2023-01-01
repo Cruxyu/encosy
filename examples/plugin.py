@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from encosy import Distributor, Entities, Commands, Entity
+from encosy import ControlPanel, Entities, Commands, Entity
 
 
 class Name(str):
@@ -54,7 +54,7 @@ def my_system(
     commands.drop_entities_with_expression(lambda entity: entity[Name] == Name("Artyom"))
 
 
-def my_plugin(distributor: Distributor):
+def my_plugin(distributor: ControlPanel):
     human_artyom: Human = (
         Name("Artyom"),
         Position(0.0, 0.0),
@@ -74,7 +74,7 @@ def my_plugin(distributor: Distributor):
 
 def main():
     print("Starting Distributor Example\n")
-    distributor = Distributor()
+    distributor = ControlPanel()
     distributor.register_plugins(my_plugin)
     print(distributor, end="\n\n")
     ticks = 3

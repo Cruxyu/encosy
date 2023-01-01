@@ -1,8 +1,8 @@
-from encosy import Distributor, Entity, Entities
+from encosy import ControlPanel, Entity, Entities
 from dataclasses import dataclass
 
 
-class TestDistributor:
+class TestControlPanel:
     def test_simple_entity(self):
         @dataclass
         class MyComponent:
@@ -35,7 +35,7 @@ class TestDistributor:
             ), "Resource values are not valid"
 
         dist = (
-            Distributor()
+            ControlPanel()
             .register_entity(entity)
             .register_systems(my_system)
             .register_resources(resource)

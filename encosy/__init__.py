@@ -1,1 +1,1 @@
-from .distributor import Commands, Distributor, Entities, Entity  # noqa
+from .controlpanel import Commands, ControlPanel, Entities, Entity  # noqa
