@@ -4,10 +4,10 @@ version = "0.9.9"
 description = "ECS python implementation"
 authors = ["Cruxyu <a.kovalenko.ai@gmail.com>"]
 readme = "README.md"
-
 packages = [
     {include = "encosy", from = "."},
 ]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -31,6 +31,19 @@ mypy = "^0.991"
 isort = "^5.10.1"
 codecov = "^2.1.12"
 mkdocs-material = "^8.5.11"
+
+
+[tool.poetry.group.mem.dependencies]
+memory-profiler = "^0.61.0"
+matplotlib = "^3.6.2"
+
+
+[tool.poetry.group.cpu.dependencies]
+snakeviz = "^2.1.1"
+
+
+[tool.poetry.group.app.dependencies]
+faker = "^15.3.4"
 
 
 [build-system]
