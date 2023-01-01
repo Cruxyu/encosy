@@ -110,21 +110,23 @@ def sleep_system(sleet_time: SleepTime):
 
 
 def main():
-    distributor = Distributor()
-    distributor.register_resources(
-        Tick(0), SleepTime(1.0)
-    )
-    distributor.register_systems(
-        tick_sys, print_sys, exit_sys, fake_entry_sys, sleep_system
-    )
-    distributor.register_entity(
+    print("Starting...")
+    Distributor().register_resources(
+        Tick(0),
+        SleepTime(1.0)
+    ).register_systems(
+        tick_sys,
+        print_sys,
+        exit_sys,
+        fake_entry_sys,
+        sleep_system
+    ).register_entity(
         *[Entity(Reserved(0), VIP(0)) for _ in range(4)],
         Entity(Reserved(0), VIP(1)),
+
         Entity(Reserved(2), VIP(1)),
         Entity(Name("Artyom"))
-    )
-    print("Starting...")
-    distributor.run()
+    ).run()
     print("Stopping...")
 
 
