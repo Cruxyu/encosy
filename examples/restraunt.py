@@ -62,16 +62,16 @@ def fake_entry_sys(commands: Commands, chairs: Entities(Chair)):
     if not name:
         return
     vip = random.randint(0, 9) == 0
-    print("New guest: {} is {}".format(name, 'VIP' if vip else "Broke"))
+    # print("New guest: {} is {}".format(name, 'VIP' if vip else "Broke"))
     human = Entity(Name(name))
     for chair in chairs:
         if chair[0].reserved <= 0 and chair[1] == int(vip):
-            print("Sure, we can serve a chair for you!")
+            # print("Sure, we can serve a chair for you!")
             commands.register_entity(human)
-            chair[0].reserved = 3
+            chair[0].reserved = random.randint(1, 1250)
             break
-    else:
-        print("You a looser, bye!")
+    # else:
+    #     print("You a looser, bye!")
 
 
 def exit_sys(commands: Commands, chairs: Entities(Chair), humans: Entities(Human)):
@@ -87,7 +87,7 @@ def exit_sys(commands: Commands, chairs: Entities(Chair), humans: Entities(Human
 
 def tick_sys(commands: Commands, ticks: Tick):
     ticks.tick += 1
-    if ticks.tick == 5:
+    if ticks.tick == 5000:
         commands.pause_distributor()
 
 
@@ -110,24 +110,24 @@ def sleep_system(sleet_time: SleepTime):
 
 
 def main():
-    print("Starting...")
+    # print("Starting...")
     Distributor().register_resources(
         Tick(0),
         SleepTime(1.0)
     ).register_systems(
         tick_sys,
-        print_sys,
+        # print_sys,
         exit_sys,
         fake_entry_sys,
-        sleep_system
+        # sleep_system
     ).register_entity(
-        *[Entity(Reserved(0), VIP(0)) for _ in range(4)],
+        *[Entity(Reserved(0), VIP(0)) for _ in range(1000)],
         Entity(Reserved(0), VIP(1)),
 
         Entity(Reserved(2), VIP(1)),
         Entity(Name("Artyom"))
     ).run()
-    print("Stopping...")
+    # print("Stopping...")
 
 
 if __name__ == "__main__":
