@@ -95,7 +95,7 @@ jobs:
       - name: Build package
         run: poetry build
 
-      - name: Run link
+      - name: Run lint
         run: make lint
 
 #      - name: Run pytest
