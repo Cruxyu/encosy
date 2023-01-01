@@ -2,8 +2,14 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+0.9.6 (2023-01-01)
+------------------
+- Added example workflow. [baranynah]
+- Added example workflow. [baranynah]
+- Fix names for new repo. [baranynah]
+- Reformat project and rename. [baranynah]
+- Docs and fixes in makefile for it. [baranynah]
+- Release: version  🚀 [baranynah]
 - Release: version  🚀 [baranynah]
 - Release: version  🚀 [baranynah]
 - Release: version  🚀 [baranynah]
