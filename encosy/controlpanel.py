@@ -5,7 +5,7 @@ from typing import Any, Callable, get_args, get_origin
 Entities = lambda x: list[tuple[x]]  # type: ignore  # noqa
 
 
-class Entity:
+class Entity(dict):
     def __init__(self, *components: Any):
         """
         Basic class for storing components by their type
@@ -14,28 +14,34 @@ class Entity:
         and value as component itself
         :param components: accumulative of any type component
         """
-        types = [type(component) for component in components]
-        if len(types) != len(set(types)):
-            raise ValueError(
-                "Duplicated components are not allowed and leads to overriding"
-            )
-        self.__components: dict[type, Any] = {
+        super().__init__({
             type(com): com for com in components
-        }
+        })
+        # types = [type(component) for component in components]
+        # if len(types) != len(set(types)):
+        #     raise ValueError(
+        #         "Duplicated components are not allowed and leads to overriding"
+        #     )
+        # self.__components: dict[type, Any] = {
+        #     type(com): com for com in components
+        # }
 
-    def __getitem__(self, key):
-        return self.__components[key]
+    # def get_components(self):
+    #     return self.__components
+    #
+    # def __getitem__(self, key):
+    #     return self.__components[key]
+    #
+    # def __contains__(self, key):
+    #     return key in self.__components
+    #
+    # def __len__(self):
+    #     return len(self.__components)
 
-    def __contains__(self, key):
-        return key in self.__components
-
-    def __len__(self):
-        return len(self.__components)
-
-    def __repr__(self):
-        return "Entity with components {}".format(
-            tuple(self.__components.values())
-        )
+    # def __repr__(self):
+    #     return "Entity with components {}".format(
+    #         tuple(self.__components.values())
+    #     )
 
 
 @dataclass
