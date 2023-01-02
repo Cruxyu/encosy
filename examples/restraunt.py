@@ -57,19 +57,26 @@ def entry_sys(commands: Commands, chairs: Entities(Chair)):
         print("You a looser, bye!")
 
 
+names_idx = 0
+
+
+def gen_random(names_idx):
+    return Entity(Name("Name{}".format(names_idx))), random.randint(0, 9) == 0
+    #return Entity(Name(fake.name())), random.randint(0, 9) == 0
+
+
 def fake_entry_sys(commands: Commands, chairs: Entities(Chair)):
-    name = fake.name()
-    if not name:
-        return
-    vip = random.randint(0, 9) == 0
-    # print("New guest: {} is {}".format(name, 'VIP' if vip else "Broke"))
-    human = Entity(Name(name))
-    for chair in chairs:
-        if chair[0].reserved <= 0 and chair[1] == int(vip):
-            # print("Sure, we can serve a chair for you!")
-            commands.register_entity(human)
-            chair[0].reserved = random.randint(1, 1250)
-            break
+    global names_idx
+    new_total = random.randint(1, 100)
+    hv = [gen_random(names_idx+i) for i in range(new_total)]
+    names_idx += new_total
+    for human, vip in hv:
+        for chair in chairs:
+            if chair[0].reserved <= 0 and chair[1] == int(vip):
+                # print("Sure, we can serve a chair for you!")
+                commands.register_entity(human)
+                chair[0].reserved = random.randint(1, 1250)
+                break
     # else:
     #     print("You a looser, bye!")
 
