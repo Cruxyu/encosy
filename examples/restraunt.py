@@ -50,7 +50,7 @@ def entry_sys(commands: Commands, chairs: Entities[Entity[Chair]]):
     for chair in chairs:
         if chair[Reserved].reserved <= 0 and chair[VIP] == int(vip):
             print("Sure, we can serve a chair for you!")
-            commands.register_entity(human)
+            commands.register_entities(human)
             chair[Reserved].reserved = 3
             break
     else:
@@ -73,7 +73,7 @@ def fake_entry_sys(commands: Commands, chairs: Entities[Entity[Chair]]):
         for chair in chairs:
             if chair[Reserved].reserved <= 0 and chair[VIP] == int(vip):
                 # print("Sure, we can serve a chair for you!")
-                commands.register_entity(human)
+                commands.register_entities(human)
                 chair[Reserved].reserved = random.randint(1, 1250)
                 break
     # else:
@@ -127,7 +127,7 @@ def main():
         exit_sys,
         fake_entry_sys,
         # sleep_system
-    ).register_entity(
+    ).register_entities(
         *[Entity(Reserved(0), VIP(0)) for _ in range(1000)],
         Entity(Reserved(0), VIP(1)),
 

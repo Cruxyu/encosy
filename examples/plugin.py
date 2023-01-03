@@ -41,7 +41,7 @@ def my_system(
         Position(2 + len(names_at), 2 + len(names_at))
     )
     print("Adding an Entity: {}".format(new_entity))
-    commands.register_entity(new_entity)
+    commands.register_entities(new_entity)
     for name_at in names_at:
         name = name_at[0]
         position = name_at[1]
@@ -63,7 +63,7 @@ def my_plugin(distributor: ControlPanel):
         Name("Ilya"),
         Position(2.0, 2.0),
     )
-    distributor.register_entity(
+    distributor.register_entities(
         Entity(*human_artyom),
         Entity(*human_ilya),
         Entity(Junk(0)),

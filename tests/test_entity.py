@@ -1,46 +1,28 @@
 from encosy import Entity
-from dataclasses import dataclass
+import pytest
 
 
 class TestEntity:
-    def test_simple_single(self):
-        @dataclass
-        class MyComponent:
-            integer: int
-            string: str
-
-        integer = 10
-        string = "row"
-        entity = Entity(MyComponent(integer, string))
-        assert MyComponent in entity, "Component have not been found"
+    def test_simple_single(self, my_component):
+        entity = Entity(my_component)
+        assert type(my_component) in entity, "Component have not been found"
         assert len(entity) == 1, "Length is not equal 1"
-        assert entity[MyComponent], "Can't get component from entity"
+        assert entity[type(my_component)], "Can't get component from entity"
 
-    def test_simple_multiple(self):
-        @dataclass
-        class MyComponent1:
-            integer: int
-            string: str
+    def test_simple_multiple(self, my_component, my_other_component):
 
-        integer = 10
-        string = "row"
-        component1 = MyComponent1(integer, string)
-
-        @dataclass
-        class MyComponent2:
-            integer: int
-            string: str
-
-        integer = 10
-        string = "row"
-        component2 = MyComponent2(integer, string)
-
-        entity = Entity(component1, component2)
+        entity = Entity(my_component, my_other_component)
 
         assert (
-            MyComponent1 in entity and MyComponent2 in entity
+            type(my_component) in entity and type(my_other_component) in entity
         ), "Not all components in entity"
         assert len(entity) == 2, "Length of entity is not equal 2"
         assert (
-            entity[MyComponent1] and entity[MyComponent2]
+            entity[type(my_component)] and entity[type(my_other_component)]
         ), "Can't get some of the required components"
+
+    def test_with_error(self, my_component):
+        entity = Entity(my_component)
+
+        with pytest.raises(KeyError):
+            _ = entity[int]
