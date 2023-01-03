@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from encosy import ControlPanel, Entities, Commands, Entity
+from encosy import ControlPanel, Commands, Entity
 
 
 class Name(str):
@@ -32,8 +32,8 @@ class Resolution:
 def my_system(
         commands: Commands,
         resolution: Resolution,
-        names_at: Entities(Human),
-        junks: Entities(Junk),
+        names_at: Entity[Human],
+        junks: Entity[Junk],
 ):
     print("My Resolution: {}".format(resolution))
     new_entity = Entity(

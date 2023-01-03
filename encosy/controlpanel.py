@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from inspect import signature
 from typing import Any, Callable, get_args, get_origin
 
-Entities = lambda x: list[tuple[x]]  # type: ignore  # noqa
+
+class Entities(list):
+    pass
 
 
 class Entity(dict):
@@ -14,34 +16,7 @@ class Entity(dict):
         and value as component itself
         :param components: accumulative of any type component
         """
-        super().__init__({
-            type(com): com for com in components
-        })
-        # types = [type(component) for component in components]
-        # if len(types) != len(set(types)):
-        #     raise ValueError(
-        #         "Duplicated components are not allowed and leads to overriding"
-        #     )
-        # self.__components: dict[type, Any] = {
-        #     type(com): com for com in components
-        # }
-
-    # def get_components(self):
-    #     return self.__components
-    #
-    # def __getitem__(self, key):
-    #     return self.__components[key]
-    #
-    # def __contains__(self, key):
-    #     return key in self.__components
-    #
-    # def __len__(self):
-    #     return len(self.__components)
-
-    # def __repr__(self):
-    #     return "Entity with components {}".format(
-    #         tuple(self.__components.values())
-    #     )
+        super().__init__({type(com): com for com in components})
 
 
 @dataclass
@@ -112,6 +87,7 @@ class ControlPanel:
         Input params of Callable can contain:
             commands: Commands (name and type is reserved)
             resource: Any - same as entity, but only one can exist
+            entity: Entity[ComponentType1, ComponentType2, ...]
         :param systems: Callable
         :return: self | ControlPanel
         """
@@ -122,21 +98,20 @@ class ControlPanel:
                 resources={},
                 components={},
             )
-            arguments = signature(system).parameters
-            for name, list_tuple_argument in arguments.items():
-                if (
-                    name == "commands"
-                    or list_tuple_argument.annotation == Commands
-                ):
+            for name, arg in signature(system).parameters.items():
+                annotation = arg.annotation
+                if name == "commands" or annotation == Commands:
                     system_conf.command = True
-                elif get_origin(list_tuple_argument.annotation) != list:
-                    system_conf.resources[
-                        list_tuple_argument.annotation
-                    ] = name
+                elif (
+                    get_origin(annotation) != Entities
+                    and get_origin(annotation) != Entity
+                ):
+                    system_conf.resources[annotation] = name
                 else:
-                    argument = get_args(
-                        get_args(list_tuple_argument.annotation)[0]
-                    )
+                    if get_origin(annotation) == Entities:
+                        argument = get_args(get_args(annotation)[0])
+                    else:
+                        argument = get_args(annotation)
                     system_conf.components[argument] = name
             self.__systems_conf[system] = system_conf
         return self
@@ -298,11 +273,7 @@ class ControlPanel:
         for resource, name in system_conf.resources.items():
             key_word_arguments[name] = self.__resources[resource]
         for component_types, name in system_conf.components.items():
-            entities = self.__query_entities(*component_types)
-            key_word_arguments[name] = [
-                [entity[component_type] for component_type in component_types]
-                for entity in entities
-            ]
+            key_word_arguments[name] = self.__query_entities(*component_types)
         return key_word_arguments
 
     def tick(self) -> bool:
