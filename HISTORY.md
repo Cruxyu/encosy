@@ -4,6 +4,25 @@ Changelog
 
 (unreleased)
 ------------
+- VERSION 1.3.0. [baranynah]
+- Merge pull request #4 from Cruxyu/typing_system_update. [Cruxyu]
+
+  Typing system update
+- Remove list comprehension due time comsumpsion and refactored Entities
+  and Entity typing system (see example restraunt with proper Entities
+  and plugin with Entity both works but Entities is preferable)
+  [baranynah]
+- Increased complexity of the example + remove faker. [baranynah]
+- Merge pull request #3 from Cruxyu/entity_reworked. [Cruxyu]
+
+  entity reworked (dict inheritance instead of new class with special dict methods)
+- Entity reworked (dict inheritance instead of new class with special
+  dict methods) [baranynah]
+
+
+1.2.2 (2023-01-01)
+------------------
+- Release: version 1.2.2 🚀 [baranynah]
 - New version 1.2.2. [baranynah]
 - Release: version 1.2.1 🚀 [baranynah]
 - Release: version 1.2.1 🚀 [baranynah]
