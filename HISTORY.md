@@ -4,6 +4,8 @@ Changelog
 
 (unreleased)
 ------------
+- Version 1.5.1. [baranynah]
+- Release: version 1.5.0 🚀 [baranynah]
 - Merge pull request #5 from Cruxyu/tests_update. [Cruxyu]
 
   Tests update
