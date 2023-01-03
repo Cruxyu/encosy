@@ -40,7 +40,7 @@ lint:             ## Run pep8, black, mypy linters.
 	poetry run flake8 encosy/
 	poetry run black -l 79 --check encosy/
 	poetry run black -l 79 --check tests/
-	poetry run mypy --ignore-missing-imports encosy/
+	poetry run mypy --ignore-missing-imports --check-untyped-defs encosy/
 
 .PHONY: test
 test:             ## Run tests and generate coverage report.
