@@ -15,16 +15,16 @@ class TestControlPanel:
         resource = MyComponent(integer + integer, string + string)
 
         def my_system(
-            entities: Entities(MyComponent), my_resource: MyComponent
+            entities: Entities[Entity[MyComponent]], my_resource: MyComponent
         ):
             assert len(entities) == 1, "Entities amount is not valid"
             for entity in entities:
                 assert len(entity) == 1, "Components amount is not valid"
                 assert (
-                    entity[0].integer == integer
+                    entity[MyComponent].integer == integer
                 ), "Entity values are not valid"
                 assert (
-                    entity[0].string == string
+                    entity[MyComponent].string == string
                 ), "Entity values are not valid"
 
             assert (
