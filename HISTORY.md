@@ -4,6 +4,25 @@ Changelog
 
 (unreleased)
 ------------
+- Merge pull request #5 from Cruxyu/tests_update. [Cruxyu]
+
+  Tests update
+
+
+1.5.0 (2023-01-03)
+------------------
+- Release: version 1.5.0 🚀 [baranynah]
+- Version 1.5.0. [baranynah]
+- Bunch of tests. [baranynah]
+- Change __ to _ for easy access for testing and developing rename
+  register_entity to register_entities format subtyping for entity and
+  entities. [baranynah]
+- Added checking for subtypes in classes dict. [baranynah]
+
+
+1.3.0 (2023-01-03)
+------------------
+- Release: version 1.3.0 🚀 [baranynah]
 - VERSION 1.3.0. [baranynah]
 - Merge pull request #4 from Cruxyu/typing_system_update. [Cruxyu]
 
