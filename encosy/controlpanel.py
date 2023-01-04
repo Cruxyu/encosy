@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from inspect import signature
-from typing import Any, Callable, TypeVar, get_args, get_origin, Generic
+from typing import Generic  # noqa
+from typing import Any, Callable, TypeVar, get_args, get_origin
 
 T = TypeVar("T")
 
