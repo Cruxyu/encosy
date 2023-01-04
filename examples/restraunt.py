@@ -80,7 +80,9 @@ def fake_entry_sys(commands: Commands, chairs: Entities[Chair]):
     #     print("You a looser, bye!")
 
 
-def exit_sys(commands: Commands, chairs: Entities[Chair], humans: Entities[Human]):
+def exit_sys(commands: Commands,
+             chairs: Entities[Chair],
+             humans: Entities[Human]):
     human_to_drop = 0
     for chair in chairs:
         chair[Reserved].reserved -= 1

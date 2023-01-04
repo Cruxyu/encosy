@@ -1,6 +1,5 @@
 from encosy import ControlPanel, Entity, Entities, Commands
 from encosy.controlpanel import SystemConf
-from dataclasses import dataclass
 import pytest
 
 

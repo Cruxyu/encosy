@@ -43,15 +43,17 @@ def my_system(
     print("Adding an Entity: {}".format(new_entity))
     commands.register_entities(new_entity)
     for name_at in names_at:
-        name = name_at[0]
-        position = name_at[1]
+        name = name_at[Name]
+        position = name_at[Position]
         print(f'Hi, {name}, you at {position}')
         position.x += 1
         position.y += 1
     for junk in junks:
         print("Some junk: {}".format(junk[0]))
     commands.drop_entities(Junk)
-    commands.drop_entities_with_expression(lambda entity: entity[Name] == Name("Artyom"))
+    commands.drop_entities_with_expression(
+        lambda entity: entity[Name] == Name("Artyom")
+    )
 
 
 def my_plugin(distributor: ControlPanel):
