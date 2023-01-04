@@ -30,24 +30,24 @@ class Resolution:
 def my_system(
     commands: Commands,
     resolution: Resolution,
-    names_at: Entities[Human],
+    names_at: Entities[*Human],
     junks: Entities[Junk],
 ):
     print("My Resolution: {}".format(resolution))
-    new_entity = Entity(
+    new_entity: Entity[tuple[Name, Position]] = Entity(
         Name("Human №{}".format(len(names_at))),
         Position(2 + len(names_at), 2 + len(names_at)),
     )
     print("Adding an Entity: {}".format(new_entity))
     commands.register_entities(new_entity)
     for name_at in names_at:
-        name = name_at[Name]
-        position = name_at[Position]
+        name: Name = name_at[Name]
+        position: Position = name_at[Position]
         print(f"Hi, {name}, you at {position}")
         position.x += 1
         position.y += 1
     for junk in junks:
-        print("Some junk: {}".format(junk[0]))
+        print("Some junk: {}".format(junk[Junk]))
     commands.drop_entities(Junk)
     commands.drop_entities_with_expression(
         lambda entity: entity[Name] == Name("Artyom")
