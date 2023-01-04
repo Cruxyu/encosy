@@ -87,7 +87,7 @@ def system_with_commands():
 
 @pytest.fixture
 def system_with_entities():
-    def system(entities: Entities[Entity[MyComponent]]):
+    def system(entities: Entities[MyComponent]):
         assert isinstance(entities, Entities)
 
     return system
