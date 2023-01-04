@@ -41,7 +41,7 @@ Human = Name
 Chair = (Reserved, VIP)
 
 
-def entry_sys(commands: Commands, chairs: Entities[Entity[Chair]]):
+def entry_sys(commands: Commands, chairs: Entities[Chair]):
     name = input("Hello, what is your name, sir/madam?: ")
     if not name:
         return
@@ -64,7 +64,7 @@ def gen_random(names_idx: int):
     return Entity(Name("Name{}".format(names_idx))), random.randint(0, 9) == 0
 
 
-def fake_entry_sys(commands: Commands, chairs: Entities[Entity[Chair]]):
+def fake_entry_sys(commands: Commands, chairs: Entities[Chair]):
     global names_idx
     new_total = random.randint(1, 100)
     hv = [gen_random(names_idx+i) for i in range(new_total)]
@@ -80,7 +80,7 @@ def fake_entry_sys(commands: Commands, chairs: Entities[Entity[Chair]]):
     #     print("You a looser, bye!")
 
 
-def exit_sys(commands: Commands, chairs: Entities[Entity[Chair]], humans: Entities[Entity[Human]]):
+def exit_sys(commands: Commands, chairs: Entities[Chair], humans: Entities[Human]):
     human_to_drop = 0
     for chair in chairs:
         chair[Reserved].reserved -= 1
@@ -97,7 +97,7 @@ def tick_sys(commands: Commands, ticks: Tick):
         commands.pause_control_panel()
 
 
-def print_sys(tick: Tick, chairs: Entities[Entity[Chair]], humans: Entities[Entity[Human]]):
+def print_sys(tick: Tick, chairs: Entities[Chair], humans: Entities[Human]):
     print(f"Tick: {tick.tick}")
     print("  # Chairs")
     for k, chair in enumerate(chairs, start=1):
