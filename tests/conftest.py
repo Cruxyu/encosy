@@ -1,6 +1,8 @@
-import pytest
 from dataclasses import dataclass
-from encosy import Entities, Entity, Commands, ControlPanel
+
+import pytest
+
+from encosy import Commands, ControlPanel, Entities, Entity
 
 
 @dataclass
@@ -87,7 +89,7 @@ def system_with_commands():
 
 @pytest.fixture
 def system_with_entities():
-    def system(entities: Entities[Entity[MyComponent]]):
+    def system(entities: Entities[MyComponent]):
         assert isinstance(entities, Entities)
 
     return system

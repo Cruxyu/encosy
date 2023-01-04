@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from encosy import ControlPanel, Commands, Entity
+
+from encosy import Commands, ControlPanel, Entities, Entity
 
 
 class Name(str):
@@ -13,10 +14,7 @@ class Position:
     y: float
 
 
-Human = (
-    Name,
-    Position
-)
+Human = (Name, Position)
 
 
 class Junk(int):
@@ -30,28 +28,30 @@ class Resolution:
 
 
 def my_system(
-        commands: Commands,
-        resolution: Resolution,
-        names_at: Entity[Human],
-        junks: Entity[Junk],
+    commands: Commands,
+    resolution: Resolution,
+    names_at: Entities[*Human],
+    junks: Entities[Junk],
 ):
     print("My Resolution: {}".format(resolution))
-    new_entity = Entity(
+    new_entity: Entity[tuple[Name, Position]] = Entity(
         Name("Human №{}".format(len(names_at))),
-        Position(2 + len(names_at), 2 + len(names_at))
+        Position(2 + len(names_at), 2 + len(names_at)),
     )
     print("Adding an Entity: {}".format(new_entity))
     commands.register_entities(new_entity)
     for name_at in names_at:
-        name = name_at[0]
-        position = name_at[1]
-        print(f'Hi, {name}, you at {position}')
+        name: Name = name_at[Name]
+        position: Position = name_at[Position]
+        print(f"Hi, {name}, you at {position}")
         position.x += 1
         position.y += 1
     for junk in junks:
-        print("Some junk: {}".format(junk[0]))
+        print("Some junk: {}".format(junk[Junk]))
     commands.drop_entities(Junk)
-    commands.drop_entities_with_expression(lambda entity: entity[Name] == Name("Artyom"))
+    commands.drop_entities_with_expression(
+        lambda entity: entity[Name] == Name("Artyom")
+    )
 
 
 def my_plugin(distributor: ControlPanel):
@@ -85,5 +85,5 @@ def main():
     print(distributor, end="\n\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

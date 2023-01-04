@@ -1,25 +1,12 @@
 from dataclasses import dataclass
 from inspect import signature
+from typing import Generic  # noqa
 from typing import Any, Callable, TypeVar, get_args, get_origin
 
 T = TypeVar("T")
-A = TypeVar("A")
 
 
-class Entities(list[T]):
-    """
-    Simple class for typing in systems
-
-    def my_system(
-        entities: Entities[Entity[Name]]
-    ):
-        pass
-    """
-
-    pass
-
-
-class Entity(dict[type, A]):
+class Entity(dict[type, T]):
     def __init__(self, *components: Any):
         """
         Basic class for storing components by their type
@@ -30,6 +17,19 @@ class Entity(dict[type, A]):
         :param components: accumulative of any type component
         """
         super().__init__({type(com): com for com in components})
+
+
+class Entities(list[Entity[T]]):
+    """
+    Simple class for typing in systems
+
+    def my_system(
+        entities: Entities[Entity[Name]]
+    ):
+        pass
+    """
+
+    pass
 
 
 @dataclass

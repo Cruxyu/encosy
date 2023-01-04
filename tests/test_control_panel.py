@@ -1,7 +1,7 @@
-from encosy import ControlPanel, Entity, Entities, Commands
-from encosy.controlpanel import SystemConf
-from dataclasses import dataclass
 import pytest
+
+from encosy import Commands, ControlPanel, Entities, Entity
+from encosy.controlpanel import SystemConf
 
 
 class TestControlPanel:
@@ -10,7 +10,7 @@ class TestControlPanel:
         resource = my_resource
 
         def my_system(
-            entities: Entities[Entity[type(my_component)]],
+            entities: Entities[type(my_component)],
             my_resource: type(my_resource),
         ):
             assert len(entities) == 1, "Entities amount is not valid"

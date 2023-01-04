@@ -1,5 +1,6 @@
-from encosy import Entity
 import pytest
+
+from encosy import Entity
 
 
 class TestEntity:
