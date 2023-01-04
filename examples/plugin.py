@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from encosy import ControlPanel, Commands, Entity, Entities
+
+from encosy import Commands, ControlPanel, Entities, Entity
 
 
 class Name(str):
@@ -13,10 +14,7 @@ class Position:
     y: float
 
 
-Human = (
-    Name,
-    Position
-)
+Human = (Name, Position)
 
 
 class Junk(int):
@@ -30,22 +28,22 @@ class Resolution:
 
 
 def my_system(
-        commands: Commands,
-        resolution: Resolution,
-        names_at: Entities[Human],
-        junks: Entities[Junk],
+    commands: Commands,
+    resolution: Resolution,
+    names_at: Entities[Human],
+    junks: Entities[Junk],
 ):
     print("My Resolution: {}".format(resolution))
     new_entity = Entity(
         Name("Human №{}".format(len(names_at))),
-        Position(2 + len(names_at), 2 + len(names_at))
+        Position(2 + len(names_at), 2 + len(names_at)),
     )
     print("Adding an Entity: {}".format(new_entity))
     commands.register_entities(new_entity)
     for name_at in names_at:
         name = name_at[Name]
         position = name_at[Position]
-        print(f'Hi, {name}, you at {position}')
+        print(f"Hi, {name}, you at {position}")
         position.x += 1
         position.y += 1
     for junk in junks:
@@ -87,5 +85,5 @@ def main():
     print(distributor, end="\n\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

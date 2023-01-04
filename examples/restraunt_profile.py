@@ -1,6 +1,7 @@
-from restraunt import main as restraunt_run
 import cProfile
 import pstats
+
+from restraunt import main as restraunt_run
 
 
 def main():

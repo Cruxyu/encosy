@@ -1,9 +1,11 @@
+import random
+from dataclasses import dataclass
 from time import sleep
 
-from encosy import ControlPanel, Commands, Entity, Entities
-from dataclasses import dataclass
 from faker import Faker
-import random
+
+from encosy import Commands, ControlPanel, Entities, Entity
+
 fake = Faker()
 
 
@@ -67,7 +69,7 @@ def gen_random(names_idx: int):
 def fake_entry_sys(commands: Commands, chairs: Entities[Chair]):
     global names_idx
     new_total = random.randint(1, 100)
-    hv = [gen_random(names_idx+i) for i in range(new_total)]
+    hv = [gen_random(names_idx + i) for i in range(new_total)]
     names_idx += new_total
     for human, vip in hv:
         for chair in chairs:
@@ -80,9 +82,9 @@ def fake_entry_sys(commands: Commands, chairs: Entities[Chair]):
     #     print("You a looser, bye!")
 
 
-def exit_sys(commands: Commands,
-             chairs: Entities[Chair],
-             humans: Entities[Human]):
+def exit_sys(
+    commands: Commands, chairs: Entities[Chair], humans: Entities[Human]
+):
     human_to_drop = 0
     for chair in chairs:
         chair[Reserved].reserved -= 1
@@ -103,12 +105,15 @@ def print_sys(tick: Tick, chairs: Entities[Chair], humans: Entities[Human]):
     print(f"Tick: {tick.tick}")
     print("  # Chairs")
     for k, chair in enumerate(chairs, start=1):
-        print("    {}. Chair{} is {}".format(
-            k,
-            ' VIP' if chair[1] else '',
-            'Reserved for {}'.format(chair[Reserved].reserved)
-            if chair[Reserved].reserved > 0 else 'Not Reserved',
-        ))
+        print(
+            "    {}. Chair{} is {}".format(
+                k,
+                " VIP" if chair[1] else "",
+                "Reserved for {}".format(chair[Reserved].reserved)
+                if chair[Reserved].reserved > 0
+                else "Not Reserved",
+            )
+        )
     print("  # Human")
     for k, human in enumerate(humans, start=1):
         print(f"    {k}. {human[Name]}")
@@ -121,8 +126,7 @@ def sleep_system(sleet_time: SleepTime):
 def main():
     # print("Starting...")
     ControlPanel().register_resources(
-        Tick(0),
-        SleepTime(1.0)
+        Tick(0), SleepTime(1.0)
     ).register_systems(
         tick_sys,
         # print_sys,
@@ -132,9 +136,8 @@ def main():
     ).register_entities(
         *[Entity(Reserved(0), VIP(0)) for _ in range(1000)],
         Entity(Reserved(0), VIP(1)),
-
         Entity(Reserved(2), VIP(1)),
-        Entity(Name("Artyom"))
+        Entity(Name("Artyom")),
     ).run()
     # print("Stopping...")
 

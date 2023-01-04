@@ -1,6 +1,8 @@
-import pytest
 from dataclasses import dataclass
-from encosy import Entities, Entity, Commands, ControlPanel
+
+import pytest
+
+from encosy import Commands, ControlPanel, Entities, Entity
 
 
 @dataclass

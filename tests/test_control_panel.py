@@ -1,6 +1,7 @@
-from encosy import ControlPanel, Entity, Entities, Commands
-from encosy.controlpanel import SystemConf
 import pytest
+
+from encosy import Commands, ControlPanel, Entities, Entity
+from encosy.controlpanel import SystemConf
 
 
 class TestControlPanel:
