@@ -1,18 +1,14 @@
 import random
 from dataclasses import dataclass
 from time import sleep
-
-from faker import Faker
-
 from encosy import Commands, ControlPanel, Entities, Entity
-
-fake = Faker()
 
 
 # resource
 @dataclass
 class Tick:
     tick: int
+    maxim: int
 
 
 # component
@@ -40,7 +36,7 @@ class SleepTime(float):
 Human = Name
 
 # bundle
-Chair = (Reserved, VIP)
+Chair = Reserved | VIP
 
 
 def entry_sys(commands: Commands, chairs: Entities[Chair]):
@@ -97,7 +93,7 @@ def exit_sys(
 
 def tick_sys(commands: Commands, ticks: Tick):
     ticks.tick += 1
-    if ticks.tick == 100:
+    if ticks.tick == ticks.maxim:
         commands.pause_control_panel()
 
 
@@ -126,7 +122,7 @@ def sleep_system(sleet_time: SleepTime):
 def main():
     # print("Starting...")
     ControlPanel().register_resources(
-        Tick(0), SleepTime(1.0)
+        Tick(0, 10000), SleepTime(1.0)
     ).register_systems(
         tick_sys,
         # print_sys,
@@ -134,8 +130,8 @@ def main():
         fake_entry_sys,
         # sleep_system
     ).register_entities(
-        *[Entity(Reserved(0), VIP(0)) for _ in range(1000)],
-        Entity(Reserved(0), VIP(1)),
+        *[Entity(Reserved(0), VIP(0)) for _ in range(10000)],
+        *[Entity(Reserved(0), VIP(1)) for _ in range(1000)],
         Entity(Reserved(2), VIP(1)),
         Entity(Name("Artyom")),
     ).run()
