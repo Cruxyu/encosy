@@ -212,7 +212,7 @@ class ControlPanel:
                 if expression(entity):
                     keys_to_del.append(key)
             except KeyError:
-                pass
+                continue
         for key in keys_to_del:
             del self._entities[key]
         return self
