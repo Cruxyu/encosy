@@ -35,11 +35,12 @@ pytest-timeout = "^2.1.0"
 
 
 [tool.poetry.group.mem.dependencies]
-memory-profiler = "^0.61.0"
+scalene = "^1.5.19"
 matplotlib = "^3.6.2"
 
 
 [tool.poetry.group.cpu.dependencies]
+scalene = "^1.5.19"
 snakeviz = "^2.1.1"
 
 
