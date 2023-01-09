@@ -17,27 +17,27 @@ class EntityStorageMeta(metaclass=ABCMeta):
 
 class ResourceStorageMeta(metaclass=ABCMeta):
     @abstractmethod
-    def query(self, entity):
+    def query(self, resource):
         pass
 
     @abstractmethod
-    def add(self, entity):
+    def add(self, resource):
         pass
 
     @abstractmethod
-    def remove(self, entity):
+    def remove(self, resource):
         pass
 
 
 class SystemStorageMeta(metaclass=ABCMeta):
     @abstractmethod
-    def query(self, entity):
+    def query(self, system):
         pass
 
     @abstractmethod
-    def add(self, entity):
+    def add(self, system):
         pass
 
     @abstractmethod
-    def remove(self, entity):
+    def remove(self, system):
         pass
