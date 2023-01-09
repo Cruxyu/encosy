@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 class EntityStorageMeta(metaclass=ABCMeta):
     @abstractmethod
-    def query(self, entity):
+    def query(self, *args, **kwargs):
         pass
 
     @abstractmethod
@@ -17,7 +17,7 @@ class EntityStorageMeta(metaclass=ABCMeta):
 
 class ResourceStorageMeta(metaclass=ABCMeta):
     @abstractmethod
-    def query(self, resource):
+    def query(self, *args, **kwargs):
         pass
 
     @abstractmethod
@@ -31,7 +31,7 @@ class ResourceStorageMeta(metaclass=ABCMeta):
 
 class SystemStorageMeta(metaclass=ABCMeta):
     @abstractmethod
-    def query(self, system):
+    def query(self, *args, **kwargs):
         pass
 
     @abstractmethod
