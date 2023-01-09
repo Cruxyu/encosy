@@ -28,6 +28,10 @@ class ResourceStorageMeta(metaclass=ABCMeta):
     def remove(self, resource):
         pass
 
+    @abstractmethod
+    def get(self, resource):
+        pass
+
 
 class SystemStorageMeta(metaclass=ABCMeta):
     @abstractmethod
