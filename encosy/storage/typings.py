@@ -26,6 +26,9 @@ class Entity(dict[type, T]):
         """
         super().__init__({type(com): com for com in components})
 
+    def __hash__(self):
+        return 0
+
 
 class Entities(list[Entity[T]]):
     """
@@ -63,11 +66,11 @@ class Commands:
         :param components:
         :return: self | Commands
         """
-        self._control_panel.drop_entities(*components)
+        self._control_panel.remove_entities(*components)
         return self
 
     def drop_entities_with_expression(
-        self, expression: Callable[[Entity], bool]
+        self, expression: ()
     ):
         """
         Drop entities using expression of type (entity: Entity) -> bool
@@ -75,7 +78,7 @@ class Commands:
             lambda entity: entity[Position].x == 17.0
                             and entity[Position].y == 21.0
             where Position is a component of a given entity
-        :param expression: Callable[[Entity], bool]
+        :param expression: ()[[Entity], bool]
         :return: self | Commands
         """
         self._control_panel.drop_entities_with_expression(expression)
@@ -124,3 +127,4 @@ class Commands:
         """
         self._control_panel.resume()
         return self
+
