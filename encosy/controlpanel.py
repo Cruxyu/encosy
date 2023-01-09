@@ -1,138 +1,40 @@
-from dataclasses import dataclass
-from inspect import signature
-from typing import Generic  # noqa
-from typing import Any, Callable, TypeVar, get_args, get_origin
-
-T = TypeVar("T")
-
-
-class Entity(dict[type, T]):
-    def __init__(self, *components: Any):
-        """
-        Basic class for storing components by their type
-
-        If duplicated types passed no error will be raised
-        instead duplicate value replace existing one
-
-        :param components: accumulative of any type component
-        """
-        super().__init__({type(com): com for com in components})
-
-
-class Entities(list[Entity[T]]):
-    """
-    Simple class for typing in systems
-
-    def my_system(
-        entities: Entities[Entity[Name]]
-    ):
-        pass
-    """
-
-    pass
-
-
-@dataclass
-class SystemConf:
-    system: Callable
-    command: bool
-    resources: dict[type, str]
-    components: dict[tuple, str]
+from typing import Any
+from .storage import EntityStorageMeta, ResourceStorageMeta, SystemStorageMeta
+from .storage import DefaultSystemStorage, DefaultResourceStorage, DefaultEntityStorage
 
 
 class ControlPanel:
-    def __init__(self):
+    def __init__(
+            self,
+            system_storage: SystemStorageMeta = DefaultSystemStorage(),
+            entity_storage: EntityStorageMeta = DefaultEntityStorage(),
+            resource_storage: ResourceStorageMeta = DefaultResourceStorage(),
+    ):
         """
         ECS control panel
         """
-        self._systems_conf: dict[Callable, SystemConf] = {}
-        self._systems_to_drop: dict[Callable, None] = {}
-        self._systems_stop: dict[Callable, None] = {}
+        self.system_storage = system_storage
+        self.entity_storage = entity_storage
+        self.resource_storage = resource_storage
+
+        self._systems_to_drop: dict[(), None] = {}
+        self._systems_stop: dict[(), None] = {}
         self._stop = False
 
-        self._idx = 1
-        self._entities: dict[int, Entity] = {}
-        self._resources: dict[type, Any] = {}
         self._commands = Commands(self)
 
-    def get_systems(self) -> dict[Callable, SystemConf]:
+    def register_systems(self, *systems: ()):
         """
-        Returns systems configuration stored in ControlPanel
-        :return: dict as key=Callable or registered functions
-        """
-        return self._systems_conf
-
-    def get_entities(self) -> dict[int, Entity]:
-        """
-        Return registered entities in ControlPanel
-        DO NOT add new values to a dict instead use .register_entities()
-        :return: dict where key=int
-        """
-        return self._entities
-
-    def get_resources(self) -> dict[type, Any]:
-        """
-        Return registered resources in ControlPanel
-        :return: dict where key=type
-        """
-        return self._resources
-
-    def _query_entities(self, *component_types: type) -> Entities[Entity[Any]]:
-        """
-        Hidden function to query components
-        Returns list of same tuples types where order is defined with
-        the order of component_types
-        :param component_types: types to query components
-        :return: list[tuple[T1,T2, ... TN]]
-        """
-        entities: Entities[Entity[Any]] = Entities()
-        for entity in self._entities.values():
-            for component in component_types:
-                if component not in entity:
-                    break
-            else:
-                entities.append(entity)
-        return entities
-
-    @staticmethod
-    def extract_args_from_system(system: Callable):
-        system_conf = SystemConf(
-            system=system,
-            command=False,
-            resources={},
-            components={},
-        )
-        for name, arg in signature(system).parameters.items():
-            annotation = arg.annotation
-            if name == "commands" or annotation == Commands:
-                system_conf.command = True
-            elif (
-                get_origin(annotation) != Entities
-                and get_origin(annotation) != Entity
-            ):
-                system_conf.resources[annotation] = name
-            else:
-                if get_origin(annotation) == Entities:
-                    argument = get_args(get_args(annotation)[0])
-                else:
-                    argument = get_args(annotation)
-                system_conf.components[argument] = name
-        return system_conf
-
-    def register_systems(self, *systems: Callable[[Any], Any]):
-        """
-        Register any callable.
-        Input params of Callable can contain:
+        Register any ().
+        Input params of () can contain:
             commands: Commands (name and type is reserved)
             resource: Any - same as entity, but only one can exist
             entity: Entity[ComponentType1, ComponentType2, ...]
-        :param systems: Callable
+        :param systems: ()
         :return: self | ControlPanel
         """
         for system in systems:
-            self._systems_conf[system] = ControlPanel.extract_args_from_system(
-                system
-            )
+            self.system_storage.add(system)
         return self
 
     def register_resources(self, *resources: Any):
@@ -143,107 +45,93 @@ class ControlPanel:
         :return: self | ControlPanel
         """
         for resource in resources:
-            self._resources[type(resource)] = resource
+            self.resource_storage.add(resource)
         return self
 
-    def register_entities(self, *entities: Entity):
+    def register_entities(self, *entities):
         """
         Register entity. Each entity assigned a unique integer
         :param entities: Entity with components
         :return: self | ControlPanel
         """
         for entity in entities:
-            self._entities[self._idx] = entity
-            self._idx += 1
+            self.entity_storage.add(entity)
         return self
 
-    def register_plugins(self, *plugins: Callable[[Any], None]):
+    def register_plugins(self, *plugins: ('ControlPanel',)):
         """
         Register plugins. Plugin is a simple function that takes ControlPanel
-        :param plugins: Callable[[ControlPanel]], None]
+        :param plugins: ()[[ControlPanel]], None]
         :return: self | ControlPanel
         """
         for plugin in plugins:
             plugin(self)
         return self
 
-    def _drop_systems(self, *systems: Callable[[Any], Any]):
+    def _remove_system(self, *systems: ()):
         """
         Drop given systems
-        :param systems: Callable
+        :param systems: ()
         :return: self | ControlPanel
         """
         for system in systems:
-            if system in self._systems_conf:
-                del self._systems_conf[system]
+            self.system_storage.remove(system)
         return self
 
-    def drop_entities(self, *component_types: type):
+    def remove_entities(self, *component_types: type):
         """
         Drop entities based on its components types
         :param component_types: type that entity should contain
         in order to be dropped
         :return: self | ControlPanel
         """
-        keys_to_del = []
-        for key, entity in self._entities.items():
-            for component in component_types:
-                if component not in entity:
-                    break
-            else:
-                keys_to_del.append(key)
-        for key in keys_to_del:
-            del self._entities[key]
+        entities = self.entity_storage.get(*component_types)
+        for entity in entities:
+            self.entity_storage.remove(entity)
         return self
 
     def drop_entities_with_expression(
-        self, expression: Callable[[Entity], bool]
+        self, expression: ()
     ):
         """
         Drops entities based on expression of type (entity: Entity) -> bool
         Ex:
             lambda entity: Entity[Name] == "MyName"
-        :param expression: Callable[[Entity], bool]
+        :param expression: ()[[Entity], bool]
         :return: self | ControlPanel
         """
-        keys_to_del = []
-        for key, entity in self._entities.items():
-            try:
-                if expression(entity):
-                    keys_to_del.append(key)
-            except KeyError:
-                continue
-        for key in keys_to_del:
-            del self._entities[key]
+        entities = self.entity_storage.query_expression(expression)
+        for entity in entities:
+            self.entity_storage.remove(entity)
         return self
 
     def stop_systems(self, *systems):
         """
         Add systems to stop dictionary
-        :param systems: Callable
+        :param systems: ()
         :return: self | ControlPanel
         """
         for system in systems:
             self._systems_stop[system] = None
         return self
 
-    def start_systems(self, *systems: Callable[[Any], Any]):
+    def start_systems(self, *systems: ()[[Any], Any]):
         """
         Remove systems from stop dictionary
-        :param systems: Callable
+        :param systems: ()
         :return: self | ControlPanel
         """
         for system in systems:
             if system in self._systems_stop:
-                del self._systems_stop[system]
+                self._systems_stop.pop(system)
         return self
 
-    def schedule_drop_systems(self, *systems: Callable[[Any], Any]):
+    def schedule_drop_systems(self, *systems: ()[[Any], Any]):
         """
         Schedules drop of a given systems
         Add system to drop queue and call _run_scheduled_drop_systems
         at the end of a tick
-        :param systems: Callable
+        :param systems: ()
         :return: self | ControlPanel
         """
         for system in systems:
@@ -255,7 +143,7 @@ class ControlPanel:
         Runs drop on a system drop queue and clear it
         :return: self | ControlPanel
         """
-        self._drop_systems(*self._systems_to_drop.keys())
+        self._remove_system(*self._systems_to_drop.keys())
         self._systems_to_drop = {}
         return self
 
@@ -277,7 +165,7 @@ class ControlPanel:
         self._stop = False
         return self
 
-    def _extract_system_input(self, system_conf: SystemConf) -> dict[str, Any]:
+    def _extract_system_input(self, system) -> dict[str, Any]:
         """
         Extracts input values for given system and returns basic kwargs
         If any of the resources does not exist or isn't registered - KeyError
@@ -285,12 +173,13 @@ class ControlPanel:
         :return: dict[str, Any] - aka kwargs
         """
         key_word_arguments: dict[str, Any] = {}
-        if system_conf.command:
-            key_word_arguments["commands"] = self._commands
-        for resource, name in system_conf.resources.items():
-            key_word_arguments[name] = self._resources[resource]
-        for component_types, name in system_conf.components.items():
-            key_word_arguments[name] = self._query_entities(*component_types)
+        system_config = self.system_storage.get(system)
+        for command, name in system_config.commands.items():
+            key_word_arguments[name] = self._commands
+        for resource, name in system_config.resources.items():
+            key_word_arguments[name] = self.resource_storage.get(resource)
+        for component_types, name in system_config.components.items():
+            key_word_arguments[name] = self.entity_storage.query(*component_types)
         return key_word_arguments
 
     def tick(self) -> bool:
@@ -304,10 +193,10 @@ class ControlPanel:
         """
         if self._stop:
             return False
-        for system_conf in self._systems_conf.values():
-            if system_conf.system in self._systems_stop:
+        for system_config in self.system_storage.get_all():
+            if system_config.system in self._systems_stop:
                 continue
-            system_conf.system(**self._extract_system_input(system_conf))
+            system_config.system(**self._extract_system_input(system_config))
         self._run_scheduled_drop_systems()
         return True
 
@@ -359,7 +248,7 @@ class Commands:
         return self
 
     def drop_entities_with_expression(
-        self, expression: Callable[[Entity], bool]
+        self, expression: ()[[Entity], bool]
     ):
         """
         Drop entities using expression of type (entity: Entity) -> bool
@@ -367,7 +256,7 @@ class Commands:
             lambda entity: entity[Position].x == 17.0
                             and entity[Position].y == 21.0
             where Position is a component of a given entity
-        :param expression: Callable[[Entity], bool]
+        :param expression: ()[[Entity], bool]
         :return: self | Commands
         """
         self._control_panel.drop_entities_with_expression(expression)
