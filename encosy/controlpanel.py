@@ -240,11 +240,11 @@ class Commands:
         :param components:
         :return: self | Commands
         """
-        self._control_panel.drop_entities(*components)
+        self._control_panel.remove_entities(*components)
         return self
 
     def drop_entities_with_expression(
-        self, expression: ()[[Entity], bool]
+        self, expression: ()
     ):
         """
         Drop entities using expression of type (entity: Entity) -> bool
