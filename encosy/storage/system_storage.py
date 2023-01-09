@@ -15,7 +15,8 @@ def process_system_arguments(system: ()) -> SystemConfig:
     for name, annotation in system.__annotations__.items():
         if annotation is Commands:
             system_conf.commands[annotation] = name
-        elif annotation is Entities:
+        elif getattr(annotation, "__origin__", None) is Entities:
+            print(annotation.__args__)
             system_conf.components[annotation.__args__] = name
         else:
             system_conf.resources[annotation] = name
