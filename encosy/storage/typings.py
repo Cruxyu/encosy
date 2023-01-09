@@ -1,6 +1,17 @@
 from typing import TypeVar, Any, Callable
+from dataclasses import dataclass
+
 
 T = TypeVar("T")
+
+
+@dataclass
+class SystemConfig:
+    callable: ()
+    commands: dict[type, str]
+    resources: dict[type, str]
+    components: dict[tuple, str]
+    types: set[type]
 
 
 class Entity(dict[type, T]):

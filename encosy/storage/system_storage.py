@@ -1,17 +1,7 @@
 from .meta import SystemStorageMeta
 
-from dataclasses import dataclass
 from typing import Any
-from .typings import Entity, Entities, Commands
-
-
-@dataclass
-class SystemConfig:
-    callable: ()
-    commands: dict[type, str]
-    resources: dict[type, str]
-    components: dict[tuple, str]
-    types: set[type]
+from .typings import Entities, Commands, SystemConfig
 
 
 def process_system_arguments(system: ()) -> SystemConfig:
