@@ -57,3 +57,7 @@ class SystemStorageMeta(metaclass=ABCMeta):
     @abstractmethod
     def get_all(self):
         pass
+
+    @abstractmethod
+    def get(self, system):
+        pass
