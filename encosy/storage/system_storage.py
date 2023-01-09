@@ -51,6 +51,12 @@ class SimpleSystemStorage(SystemStorageMeta):
             if types <= system_config.types
         ]
 
+    def get(self, system):
+        return self.systems[system]
+
+    def get_all(self):
+        return self.systems.values()
+
 
 class ComplexSystemStorage(SystemStorageMeta):
     def add(self, system: ()):
