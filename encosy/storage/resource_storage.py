@@ -18,3 +18,6 @@ class SimpleResourceStorage(ResourceStorageMeta):
 
     def get(self, resource: type):
         return self.resources[resource]
+
+    def __len__(self):
+        return len(self.resources)

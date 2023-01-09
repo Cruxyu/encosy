@@ -52,30 +52,5 @@ class SimpleSystemStorage(SystemStorageMeta):
     def get_all(self):
         return self.systems.values()
 
-
-class ComplexSystemStorage(SystemStorageMeta):
-    def add(self, system: ()):
-        pass
-
-    def remove(self, system: ()):
-        pass
-
-    def query(self, *args, **kwargs):
-        pass
-
-
-def _extract_system_input(self, system_conf: SystemConfig) -> dict[str, Any]:
-    """
-    Extracts input values for given system and returns basic kwargs
-    If any of the resources does not exist or isn't registered - KeyError
-    :param system_conf: system params
-    :return: dict[str, Any] - aka kwargs
-    """
-    key_word_arguments: dict[str, Any] = {}
-    if system_conf.command:
-        key_word_arguments["commands"] = self._commands
-    for resource, name in system_conf.resources.items():
-        key_word_arguments[name] = self._resources[resource]
-    for component_types, name in system_conf.components.items():
-        key_word_arguments[name] = self._query_entities(*component_types)
-    return key_word_arguments
+    def __len__(self):
+        return len(self.systems)

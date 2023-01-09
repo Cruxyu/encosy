@@ -42,3 +42,6 @@ class SimpleEntityStorage(EntityStorageMeta):
             except KeyError:
                 continue
         return entities
+
+    def __len__(self):
+        return len(self.entities)
