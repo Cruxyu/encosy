@@ -37,9 +37,8 @@ class SimpleEntityStorage(EntityStorageMeta):
         entities = []
         for entity in self.entities.values():
             try:
-                expression(entity)
+                if expression(entity):
+                    entities.append(entity)
             except KeyError:
                 continue
-            else:
-                entities.append(entity)
         return entities
