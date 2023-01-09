@@ -1,6 +1,7 @@
 from typing import Any
 from .storage import EntityStorageMeta, ResourceStorageMeta, SystemStorageMeta
 from .storage import DefaultSystemStorage, DefaultResourceStorage, DefaultEntityStorage
+from .storage.typings import SystemConfig
 
 
 class ControlPanel:
@@ -115,7 +116,7 @@ class ControlPanel:
             self._systems_stop[system] = None
         return self
 
-    def start_systems(self, *systems: ()[[Any], Any]):
+    def start_systems(self, *systems: ()):
         """
         Remove systems from stop dictionary
         :param systems: ()
@@ -126,7 +127,7 @@ class ControlPanel:
                 self._systems_stop.pop(system)
         return self
 
-    def schedule_drop_systems(self, *systems: ()[[Any], Any]):
+    def schedule_drop_systems(self, *systems: ()):
         """
         Schedules drop of a given systems
         Add system to drop queue and call _run_scheduled_drop_systems
@@ -165,15 +166,15 @@ class ControlPanel:
         self._stop = False
         return self
 
-    def _extract_system_input(self, system) -> dict[str, Any]:
+    def _extract_system_input(self, system_config: SystemConfig) -> dict[str, Any]:
         """
         Extracts input values for given system and returns basic kwargs
         If any of the resources does not exist or isn't registered - KeyError
-        :param system_conf: system params
+        :param system_config: system params
         :return: dict[str, Any] - aka kwargs
         """
         key_word_arguments: dict[str, Any] = {}
-        system_config = self.system_storage.get(system)
+        system_config = self.system_storage.get(system_config.callable)
         for command, name in system_config.commands.items():
             key_word_arguments[name] = self._commands
         for resource, name in system_config.resources.items():
@@ -194,9 +195,9 @@ class ControlPanel:
         if self._stop:
             return False
         for system_config in self.system_storage.get_all():
-            if system_config.system in self._systems_stop:
+            if system_config.callable in self._systems_stop:
                 continue
-            system_config.system(**self._extract_system_input(system_config))
+            system_config.callable(**self._extract_system_input(system_config))
         self._run_scheduled_drop_systems()
         return True
 
@@ -213,12 +214,7 @@ class ControlPanel:
         return self
 
     def __repr__(self):
-        return (
-            "ControlPanel\n    Systems: {}\n    Entities: {}\n    "
-            "Resources: {}".format(
-                self._systems_conf, self._entities, self._resources
-            )
-        )
+        return "Control Panel"
 
 
 class Commands:
