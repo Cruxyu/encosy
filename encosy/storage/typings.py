@@ -26,9 +26,6 @@ class Entity(dict[type, T]):
         """
         super().__init__({type(com): com for com in components})
 
-    def __hash__(self):
-        return 0
-
 
 class Entities(list[Entity[T]]):
     """

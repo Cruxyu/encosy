@@ -4,13 +4,23 @@ from .typings import Entity
 
 class SimpleEntityStorage(EntityStorageMeta):
     def __init__(self):
-        self.entities = set()
+        self.idx = 0
+        self.entities: dict[int, Entity] = {}
 
     def add(self, entity: Entity):
-        self.entities.add(entity)
+        self.idx += 1
+        self.entities[self.idx] = entity
+        return self
 
     def remove(self, entity: Entity):
-        self.entities.remove(entity)
+        key_to_del = 0
+        for key, entity_to_del in self.entities.items():
+            if entity_to_del == entity:
+                key_to_del = key
+                break
+        if key_to_del:
+            self.entities.pop(key_to_del)
+        return self
 
     def query(self, *args, **kwargs):
         pass
@@ -18,14 +28,14 @@ class SimpleEntityStorage(EntityStorageMeta):
     def get(self, *types):
         entities = []
         components = set(types)
-        for entity in self.entities:
+        for entity in self.entities.values():
             if components <= entity.keys():
                 entities.append(entity)
         return entities
 
     def query_expression(self, expression: ()):
         entities = []
-        for entity in self.entities:
+        for entity in self.entities.values():
             try:
                 expression(entity)
             except KeyError:
