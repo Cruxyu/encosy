@@ -1,7 +1,6 @@
 import pytest
 
-from encosy import Commands, ControlPanel, Entities, Entity
-from encosy.controlpanel import SystemConf
+from encosy import Commands, ControlPanel, Entities, Entity, SystemConfig
 
 
 class TestControlPanel:
@@ -77,10 +76,10 @@ class TestControlPanel:
     def test_system_extraction_commands(
         self, my_control_panel, system_with_commands
     ):
-        system_conf = SystemConf(
-            command=True,
+        system_conf = SystemConfig(
+            commands={},
             components={},
-            system=system_with_commands,
+            callable=system_with_commands,
             resources={},
         )
         kwargs = my_control_panel._extract_system_input(system_conf)

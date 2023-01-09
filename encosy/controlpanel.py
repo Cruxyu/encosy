@@ -1,15 +1,22 @@
 from typing import Any
-from .storage import EntityStorageMeta, ResourceStorageMeta, SystemStorageMeta
-from .storage import DefaultSystemStorage, DefaultResourceStorage, DefaultEntityStorage
-from .storage.typings import SystemConfig, Commands
+
+from .storage import (
+    DefaultEntityStorage,
+    DefaultResourceStorage,
+    DefaultSystemStorage,
+    EntityStorageMeta,
+    ResourceStorageMeta,
+    SystemStorageMeta,
+)
+from .storage.typings import Commands, SystemConfig
 
 
 class ControlPanel:
     def __init__(
-            self,
-            system_storage: SystemStorageMeta = DefaultSystemStorage(),
-            entity_storage: EntityStorageMeta = DefaultEntityStorage(),
-            resource_storage: ResourceStorageMeta = DefaultResourceStorage(),
+        self,
+        system_storage: SystemStorageMeta = DefaultSystemStorage(),
+        entity_storage: EntityStorageMeta = DefaultEntityStorage(),
+        resource_storage: ResourceStorageMeta = DefaultResourceStorage(),
     ):
         """
         ECS control panel
@@ -59,7 +66,7 @@ class ControlPanel:
             self.entity_storage.add(entity)
         return self
 
-    def register_plugins(self, *plugins: ('ControlPanel',)):
+    def register_plugins(self, *plugins: ("ControlPanel",)):
         """
         Register plugins. Plugin is a simple function that takes ControlPanel
         :param plugins: ()[[ControlPanel]], None]
@@ -91,9 +98,7 @@ class ControlPanel:
             self.entity_storage.remove(entity)
         return self
 
-    def drop_entities_with_expression(
-        self, expression: ()
-    ):
+    def drop_entities_with_expression(self, expression: ()):
         """
         Drops entities based on expression of type (entity: Entity) -> bool
         Ex:
@@ -166,7 +171,9 @@ class ControlPanel:
         self._stop = False
         return self
 
-    def _extract_system_input(self, system_config: SystemConfig) -> dict[str, Any]:
+    def _extract_system_input(
+        self, system_config: SystemConfig
+    ) -> dict[str, Any]:
         """
         Extracts input values for given system and returns basic kwargs
         If any of the resources does not exist or isn't registered - KeyError
@@ -180,7 +187,9 @@ class ControlPanel:
         for resource, name in system_config.resources.items():
             key_word_arguments[name] = self.resource_storage.get(resource)
         for component_types, name in system_config.components.items():
-            key_word_arguments[name] = self.entity_storage.get(*component_types)
+            key_word_arguments[name] = self.entity_storage.get(
+                *component_types
+            )
         return key_word_arguments
 
     def tick(self) -> bool:

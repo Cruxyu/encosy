@@ -1,6 +1,7 @@
 import random
 from dataclasses import dataclass
 from time import sleep
+
 from encosy import Commands, ControlPanel, Entities, Entity
 
 
@@ -124,11 +125,7 @@ def main():
     ControlPanel().register_resources(
         Tick(0, 100), SleepTime(0.1)
     ).register_systems(
-        tick_sys,
-        print_sys,
-        exit_sys,
-        fake_entry_sys,
-        sleep_system
+        tick_sys, print_sys, exit_sys, fake_entry_sys, sleep_system
     ).register_entities(
         *[Entity(Reserved(0), VIP(0)) for _ in range(10)],
         *[Entity(Reserved(0), VIP(1)) for _ in range(1)],

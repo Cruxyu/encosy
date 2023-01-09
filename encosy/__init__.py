@@ -1,2 +1,2 @@
-from .controlpanel import ControlPanel
-from .storage.typings import Entities, Entity, Commands, SystemConfig
+from .controlpanel import ControlPanel  # noqa
+from .storage.typings import Commands, Entities, Entity, SystemConfig  # noqa

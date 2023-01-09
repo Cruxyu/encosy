@@ -1,6 +1,5 @@
-from typing import TypeVar, Any, Callable
 from dataclasses import dataclass
-
+from typing import Any, TypeVar
 
 T = TypeVar("T")
 
@@ -41,7 +40,7 @@ class Entities(list[Entity[T]]):
 
 
 class Commands:
-    def __init__(self, control_panel: 'ControlPanel'):
+    def __init__(self, control_panel):
         """
         Commands layer to use control panel inside a system
         :param control_panel:
@@ -66,9 +65,7 @@ class Commands:
         self._control_panel.remove_entities(*components)
         return self
 
-    def drop_entities_with_expression(
-        self, expression: ()
-    ):
+    def drop_entities_with_expression(self, expression: ()):
         """
         Drop entities using expression of type (entity: Entity) -> bool
         ex:
@@ -124,4 +121,3 @@ class Commands:
         """
         self._control_panel.resume()
         return self
-

@@ -1,16 +1,12 @@
-from .meta import SystemStorageMeta
-
 from typing import Any
-from .typings import Entities, Commands, SystemConfig
+
+from .meta import SystemStorageMeta
+from .typings import Commands, Entities, SystemConfig
 
 
 def process_system_arguments(system: ()) -> SystemConfig:
     system_conf = SystemConfig(
-        callable=system,
-        commands={},
-        resources={},
-        components={},
-        types=set()
+        callable=system, commands={}, resources={}, components={}, types=set()
     )
     for name, annotation in system.__annotations__.items():
         if annotation is Commands:
@@ -46,8 +42,7 @@ class SimpleSystemStorage(SystemStorageMeta):
         types = SimpleSystemStorage.process_types(*args)
         return [
             system_config.callable
-            for system_config
-            in self.systems.values()
+            for system_config in self.systems.values()
             if types <= system_config.types
         ]
 
@@ -67,6 +62,7 @@ class ComplexSystemStorage(SystemStorageMeta):
 
     def query(self, *args, **kwargs):
         pass
+
 
 def _extract_system_input(self, system_conf: SystemConfig) -> dict[str, Any]:
     """

@@ -30,7 +30,7 @@ class Resolution:
 def my_system(
     commands: Commands,
     resolution: Resolution,
-    names_at: Entities[*Human],
+    names_at: Entities[Human],
     junks: Entities[Junk],
 ):
     print("My Resolution: {}".format(resolution))
