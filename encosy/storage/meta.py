@@ -14,6 +14,14 @@ class EntityStorageMeta(metaclass=ABCMeta):
     def remove(self, entity):
         pass
 
+    @abstractmethod
+    def get(self, *types):
+        pass
+
+    @abstractmethod
+    def query_expression(self, expression):
+        pass
+
 
 class ResourceStorageMeta(metaclass=ABCMeta):
     @abstractmethod
