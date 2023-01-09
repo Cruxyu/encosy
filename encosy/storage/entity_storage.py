@@ -1,7 +1,5 @@
 from .meta import EntityStorageMeta
-from .typings import Entity, SystemConfig
-
-from typing import Any
+from .typings import Entity
 
 
 class SimpleEntityStorage(EntityStorageMeta):
