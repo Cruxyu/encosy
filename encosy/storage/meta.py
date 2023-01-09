@@ -53,3 +53,7 @@ class SystemStorageMeta(metaclass=ABCMeta):
     @abstractmethod
     def remove(self, system):
         pass
+
+    @abstractmethod
+    def get_all(self):
+        pass
