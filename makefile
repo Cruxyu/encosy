@@ -39,6 +39,8 @@ fmt:              ## Format code using black & isort.
 	poetry run python -m black -l 79 tests/
 	poetry run python -m black -l 79 examples/
 
+	poetry run ruff --fix encosy/
+
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
 	poetry run flake8 encosy/
@@ -47,6 +49,7 @@ lint:             ## Run pep8, black, mypy linters.
 	poetry run black -l 79 --check encosy/
 	poetry run black -l 79 --check tests/
 	poetry run black -l 79 --check examples/
+	poetry run ruff encosy/
 	poetry run mypy --ignore-missing-imports --check-untyped-defs encosy/
 
 .PHONY: test
@@ -80,6 +83,7 @@ clean:            ## Clean unused files.
 	@rm -rf .coverage
 	@rm -rf coverage.xml
 	@rm -rf log.log
+	@rm -rf .ruff_cache/
 
 .PHONY: release
 release:          ## Create a new tag for release.

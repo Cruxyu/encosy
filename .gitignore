@@ -7,3 +7,4 @@ coverage.xml
 notebooks/test.ipynb
 .mypy_cache
 **/.pytest_cache/
+.ruff_cache/

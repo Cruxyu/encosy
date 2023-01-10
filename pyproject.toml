@@ -35,19 +35,42 @@ pytest-timeout = "^2.1.0"
 
 
 [tool.poetry.group.mem.dependencies]
+python = "^3.10"
 scalene = "^1.5.19"
 matplotlib = "^3.6.2"
+memray = "^1.5.0"
 
 
 [tool.poetry.group.cpu.dependencies]
+python = "^3.10"
 scalene = "^1.5.19"
 snakeviz = "^2.1.1"
 
 
 [tool.poetry.group.app.dependencies]
+python = "^3.10"
 faker = "^15.3.4"
 
+
+[tool.poetry.group.lint.dependencies]
+python = "^3.10"
+ruff = "^0.0.217"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+# Enable Pyflakes and pycodestyle rules.
+select = ["E", "F"]
+
+# Never enforce `E501` (line length violations).
+ignore = ["E501"]
+
+# Never try to fix `F401` (unused imports).
+unfixable = ["F401"]
+
+# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402"]
+"path/to/file.py" = ["E402"]
