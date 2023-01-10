@@ -4,6 +4,70 @@ Changelog
 
 (unreleased)
 ------------
+- V2. [baranynah]
+- Merge pull request #8 from Cruxyu/storage_for_entitites_system.
+  [Cruxyu]
+
+  Storage for entitites system
+- Fix formatting mypy. [baranynah]
+- Fix formatting of tests. [baranynah]
+- Fix formatting and quick imports lint. [baranynah]
+- Fix tests. [baranynah]
+- Fix return to be Entities as expected. [baranynah]
+- Fix global object for system storage and replace it with None.
+  [baranynah]
+- Added len to all storages. [baranynah]
+- Reformatted library. [baranynah]
+- Change some numbers. [baranynah]
+- Fix expression getter. [baranynah]
+- Fix hash for entities remove unnecessary print. [baranynah]
+- Prepare new app. [baranynah]
+- Remove commands. [baranynah]
+- Fix imports. [baranynah]
+- Fix imports. [baranynah]
+- Fix processing args. [baranynah]
+- Fixes quick imports. [baranynah]
+- Fixes for commands. [baranynah]
+- Several fixes for control panel. [baranynah]
+- Update control panel with new storage systems. [baranynah]
+- Fix for system storage considered new meta. [baranynah]
+- Added get for functions meta. [baranynah]
+- Added get_all functions. [baranynah]
+- Added default storages for each. [baranynah]
+- Simple storage for entities. [baranynah]
+- Update meta to match needs - expression and get. [baranynah]
+- Move system config to typing. [baranynah]
+- Simple resource storage. [baranynah]
+- Added get by type method. [baranynah]
+- Specific typings file. [baranynah]
+- Simple storage and performance improvements in general functions.
+  [baranynah]
+- Change query structure. [baranynah]
+- Fix names. [baranynah]
+- Update meta to use abstract method. [baranynah]
+- Initial structure of the storage. [baranynah]
+- Merge pull request #7 from Cruxyu/profiler_update. [Cruxyu]
+
+  Profiler update
+- Change memory profiler. [baranynah]
+- Simplify fake_entry small fixes and make max_tick global. [baranynah]
+- Small change pass to continue. [baranynah]
+- Merge pull request #6 from Cruxyu/entitites_improve. [Cruxyu]
+
+  Entitites improve
+- Added formatter for tests and examples. [baranynah]
+- Automated format with isort and black. [baranynah]
+- Format examples and tests. [baranynah]
+- Cleanup (leave genetic to noqa) [baranynah]
+- Fix examples according to previous to previous commit. [baranynah]
+- Fix tests according to previous commit. [baranynah]
+- Entities improvements. Use sub-generic to utilize usage without
+  Entities[Entity[T]]] [baranynah]
+
+
+1.5.1 (2023-01-03)
+------------------
+- Release: version 1.5.1 🚀 [baranynah]
 - Version 1.5.1. [baranynah]
 - Release: version 1.5.0 🚀 [baranynah]
 - Merge pull request #5 from Cruxyu/tests_update. [Cruxyu]
