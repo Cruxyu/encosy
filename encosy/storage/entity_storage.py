@@ -1,5 +1,5 @@
 from .meta import EntityStorageMeta
-from .typings import Entity, Entities
+from .typings import Entities, Entity
 
 
 class SimpleEntityStorage(EntityStorageMeta):

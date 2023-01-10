@@ -1,5 +1,3 @@
-from typing import Any
-
 from .meta import SystemStorageMeta
 from .typings import Commands, Entities, SystemConfig
 
