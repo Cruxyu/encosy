@@ -35,18 +35,26 @@ pytest-timeout = "^2.1.0"
 
 
 [tool.poetry.group.mem.dependencies]
+python = "^3.10"
 scalene = "^1.5.19"
 matplotlib = "^3.6.2"
+memray = "^1.5.0"
 
 
 [tool.poetry.group.cpu.dependencies]
+python = "^3.10"
 scalene = "^1.5.19"
 snakeviz = "^2.1.1"
 
 
 [tool.poetry.group.app.dependencies]
+python = "^3.10"
 faker = "^15.3.4"
 
+
+[tool.poetry.group.lint.dependencies]
+python = "^3.10"
+ruff = "^0.0.217"
 
 [build-system]
 requires = ["poetry-core"]
