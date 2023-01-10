@@ -67,22 +67,22 @@ class TestControlPanel:
             pass
 
         system_config = process_system_arguments(system)
-        assert system_config.commands == {Commands: 'commands'}
+        assert system_config.commands == {Commands: "commands"}
         assert MyResource in system_config.resources
         assert system_config.resources[MyResource] == "resource"
         assert system_config.callable == system
-        assert (MyComponent, ) in system_config.components
-        assert system_config.components[(MyComponent, )] == "entities"
+        assert (MyComponent,) in system_config.components
+        assert system_config.components[(MyComponent,)] == "entities"
 
     def test_system_extraction_commands(
         self, my_control_panel, system_with_commands
     ):
         system_conf = SystemConfig(
-            commands={Commands: 'commands'},
+            commands={Commands: "commands"},
             components={},
             callable=system_with_commands,
             resources={},
-            types=set()
+            types=set(),
         )
         my_control_panel.register_systems(system_with_commands)
         kwargs = my_control_panel._extract_system_input(system_conf)
@@ -163,7 +163,9 @@ class TestControlPanel:
         my_other_component,
     ):
         my_control_panel.register_entities(my_entity, my_entity_multiple)
-        entities = my_control_panel.entity_storage.get(type(my_other_component))
+        entities = my_control_panel.entity_storage.get(
+            type(my_other_component)
+        )
         assert len(entities) == 1
         assert entities[0] == my_entity_multiple
 
@@ -226,6 +228,4 @@ class TestControlPanel:
         assert my_ticker.tick == 2
 
     def test_repr(self, my_control_panel):
-        assert (
-            str(my_control_panel) == "Control Panel"
-        )
+        assert str(my_control_panel) == "Control Panel"
