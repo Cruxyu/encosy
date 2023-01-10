@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 
 from .storage import (
     DefaultEntityStorage,
@@ -8,7 +8,7 @@ from .storage import (
     ResourceStorageMeta,
     SystemStorageMeta,
 )
-from .storage.typings import Commands, SystemConfig
+from .storage.typings import Commands, Entity, SystemConfig
 
 
 class ControlPanel:
@@ -31,20 +31,20 @@ class ControlPanel:
         self.entity_storage = entity_storage
         self.resource_storage = resource_storage
 
-        self._systems_to_drop: dict[(), None] = {}
-        self._systems_stop: dict[(), None] = {}
+        self._systems_to_drop: dict[Callable[[Any], Any], None] = {}
+        self._systems_stop: dict[Callable[[Any], Any], None] = {}
         self._stop = False
 
         self._commands = Commands(self)
 
-    def register_systems(self, *systems: ()):
+    def register_systems(self, *systems: Callable[[Any], Any]):
         """
-        Register any ().
-        Input params of () can contain:
+        Register any Callable.
+        Input params of function can contain:
             commands: Commands (name and type is reserved)
             resource: Any - same as entity, but only one can exist
             entity: Entity[ComponentType1, ComponentType2, ...]
-        :param systems: ()
+        :param systems: Callable
         :return: self | ControlPanel
         """
         for system in systems:
@@ -72,7 +72,7 @@ class ControlPanel:
             self.entity_storage.add(entity)
         return self
 
-    def register_plugins(self, *plugins: ("ControlPanel",)):
+    def register_plugins(self, *plugins: Callable[["ControlPanel"], Any]):
         """
         Register plugins. Plugin is a simple function that takes ControlPanel
         :param plugins: ()[[ControlPanel]], None]
@@ -82,7 +82,7 @@ class ControlPanel:
             plugin(self)
         return self
 
-    def _remove_system(self, *systems: ()):
+    def _remove_system(self, *systems: Callable[[Any], Any]):
         """
         Drop given systems
         :param systems: ()
@@ -104,7 +104,9 @@ class ControlPanel:
             self.entity_storage.remove(entity)
         return self
 
-    def drop_entities_with_expression(self, expression: ()):
+    def drop_entities_with_expression(
+        self, expression: Callable[[Entity], bool]
+    ):
         """
         Drops entities based on expression of type (entity: Entity) -> bool
         Ex:
@@ -117,7 +119,7 @@ class ControlPanel:
             self.entity_storage.remove(entity)
         return self
 
-    def stop_systems(self, *systems):
+    def stop_systems(self, *systems: Callable[[Any], Any]):
         """
         Add systems to stop dictionary
         :param systems: ()
@@ -127,7 +129,7 @@ class ControlPanel:
             self._systems_stop[system] = None
         return self
 
-    def start_systems(self, *systems: ()):
+    def start_systems(self, *systems: Callable[[Any], Any]):
         """
         Remove systems from stop dictionary
         :param systems: ()
@@ -138,7 +140,7 @@ class ControlPanel:
                 self._systems_stop.pop(system)
         return self
 
-    def schedule_drop_systems(self, *systems: ()):
+    def schedule_drop_systems(self, *systems: Callable[[Any], Any]):
         """
         Schedules drop of a given systems
         Add system to drop queue and call _run_scheduled_drop_systems

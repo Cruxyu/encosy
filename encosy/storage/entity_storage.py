@@ -1,3 +1,5 @@
+from typing import Any, Callable
+
 from .meta import EntityStorageMeta
 from .typings import Entities, Entity
 
@@ -26,15 +28,15 @@ class SimpleEntityStorage(EntityStorageMeta):
         pass
 
     def get(self, *types):
-        entities = Entities()
+        entities: Entities[Any] = Entities()
         components = set(types)
         for entity in self.entities.values():
             if components <= entity.keys():
                 entities.append(entity)
         return entities
 
-    def query_expression(self, expression: ()):
-        entities = Entities()
+    def query_expression(self, expression: Callable[[Entity], Any]):
+        entities: Entities[Any] = Entities()
         for entity in self.entities.values():
             try:
                 if expression(entity):

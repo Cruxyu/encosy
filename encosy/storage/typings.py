@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, TypeVar
+from typing import Any, Callable, TypeVar
 
 T = TypeVar("T")
 
 
 @dataclass
 class SystemConfig:
-    callable: ()
+    callable: Callable[[Any], Any]
     commands: dict[type, str]
     resources: dict[type, str]
     components: dict[tuple, str]
@@ -65,7 +65,7 @@ class Commands:
         self._control_panel.remove_entities(*components)
         return self
 
-    def drop_entities_with_expression(self, expression: ()):
+    def drop_entities_with_expression(self, expression: Callable[[Any], Any]):
         """
         Drop entities using expression of type (entity: Entity) -> bool
         ex:
