@@ -47,6 +47,7 @@ lint:             ## Run pep8, black, mypy linters.
 	poetry run black -l 79 --check encosy/
 	poetry run black -l 79 --check tests/
 	poetry run black -l 79 --check examples/
+	poetry run ruff encosy/
 	poetry run mypy --ignore-missing-imports --check-untyped-defs encosy/
 
 .PHONY: test
@@ -80,6 +81,7 @@ clean:            ## Clean unused files.
 	@rm -rf .coverage
 	@rm -rf coverage.xml
 	@rm -rf log.log
+	@rm -rf .ruff_cache/
 
 .PHONY: release
 release:          ## Create a new tag for release.
