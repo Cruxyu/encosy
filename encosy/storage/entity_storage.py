@@ -1,5 +1,5 @@
 from .meta import EntityStorageMeta
-from .typings import Entity
+from .typings import Entity, Entities
 
 
 class SimpleEntityStorage(EntityStorageMeta):
@@ -26,7 +26,7 @@ class SimpleEntityStorage(EntityStorageMeta):
         pass
 
     def get(self, *types):
-        entities = []
+        entities = Entities()
         components = set(types)
         for entity in self.entities.values():
             if components <= entity.keys():
@@ -34,7 +34,7 @@ class SimpleEntityStorage(EntityStorageMeta):
         return entities
 
     def query_expression(self, expression: ()):
-        entities = []
+        entities = Entities()
         for entity in self.entities.values():
             try:
                 if expression(entity):
