@@ -14,13 +14,19 @@ from .storage.typings import Commands, SystemConfig
 class ControlPanel:
     def __init__(
         self,
-        system_storage: SystemStorageMeta = DefaultSystemStorage(),
-        entity_storage: EntityStorageMeta = DefaultEntityStorage(),
-        resource_storage: ResourceStorageMeta = DefaultResourceStorage(),
+        system_storage: SystemStorageMeta | None = None,
+        entity_storage: EntityStorageMeta | None = None,
+        resource_storage: ResourceStorageMeta | None = None,
     ):
         """
         ECS control panel
         """
+        if system_storage is None:
+            system_storage = DefaultSystemStorage()
+        if entity_storage is None:
+            entity_storage = DefaultEntityStorage()
+        if resource_storage is None:
+            resource_storage = DefaultResourceStorage()
         self.system_storage = system_storage
         self.entity_storage = entity_storage
         self.resource_storage = resource_storage
