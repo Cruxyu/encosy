@@ -39,6 +39,8 @@ fmt:              ## Format code using black & isort.
 	poetry run python -m black -l 79 tests/
 	poetry run python -m black -l 79 examples/
 
+	poetry run ruff --fix encosy/
+
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
 	poetry run flake8 encosy/
