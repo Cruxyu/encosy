@@ -9,9 +9,9 @@ class TestCommands:
             commands.register_entities(my_entity_multiple)
 
         my_control_panel.register_entities(my_entity).register_systems(system)
-        assert len(my_control_panel.get_entities()) == 1
+        assert len(my_control_panel.entity_storage) == 1
         my_control_panel.tick()
-        assert len(my_control_panel.get_entities()) == 2
+        assert len(my_control_panel.entity_storage) == 2
 
     def test_drop_entities(
         self,
@@ -26,9 +26,9 @@ class TestCommands:
         my_control_panel.register_entities(
             my_entity, my_entity_multiple
         ).register_systems(system)
-        assert len(my_control_panel.get_entities()) == 2
+        assert len(my_control_panel.entity_storage) == 2
         my_control_panel.tick()
-        assert len(my_control_panel.get_entities()) == 1
+        assert len(my_control_panel.entity_storage) == 1
 
     def test_drop_entities_expression(
         self,
@@ -45,9 +45,9 @@ class TestCommands:
         my_control_panel.register_entities(
             my_entity, my_entity_multiple
         ).register_systems(system)
-        assert len(my_control_panel.get_entities()) == 2
+        assert len(my_control_panel.entity_storage) == 2
         my_control_panel.tick()
-        assert len(my_control_panel.get_entities()) == 1
+        assert len(my_control_panel.entity_storage) == 1
 
     def test_stop_and_start_systems(
         self,
@@ -69,7 +69,7 @@ class TestCommands:
         my_control_panel.tick()
         assert len(my_control_panel._systems_stop) == 1
 
-        my_control_panel._drop_systems(system_stop)
+        my_control_panel._remove_system(system_stop)
         my_control_panel.register_systems(system_start)
         my_control_panel.tick()
         assert len(my_control_panel._systems_stop) == 0
@@ -87,9 +87,9 @@ class TestCommands:
         my_control_panel.register_entities(my_entity).register_systems(
             system, system_with_entities
         )
-        assert len(my_control_panel.get_systems()) == 2
+        assert len(my_control_panel.system_storage) == 2
         my_control_panel.tick()
-        assert len(my_control_panel.get_systems()) == 1
+        assert len(my_control_panel.system_storage) == 1
 
     def test_stop_and_resume_cp(self, my_control_panel, my_ticker):
         def system(resource: type(my_ticker)):

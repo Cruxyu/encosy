@@ -1,7 +1,7 @@
 import pytest
 
-from encosy import Commands, ControlPanel, Entities, Entity
-from encosy.controlpanel import SystemConf
+from encosy import Commands, ControlPanel, Entities, Entity, SystemConfig
+from encosy.storage.system_storage import process_system_arguments
 
 
 class TestControlPanel:
@@ -30,9 +30,9 @@ class TestControlPanel:
             .register_systems(my_system)
             .register_resources(resource)
         )
-        assert len(dist.get_systems()) == 1, "Systems amount is not valid"
-        assert len(dist.get_entities()) == 1, "Entities amount is not valid"
-        assert len(dist.get_resources()) == 1, "Resources amount is not valid"
+        assert len(dist.system_storage) == 1, "Systems amount is not valid"
+        assert len(dist.entity_storage) == 1, "Entities amount is not valid"
+        assert len(dist.resource_storage) == 1, "Resources amount is not valid"
         dist.tick()
 
     def test_resource(
@@ -60,29 +60,31 @@ class TestControlPanel:
             pass
 
         def system(
-            command: Commands,  # noqa
+            commands: Commands,  # noqa
             resource: MyResource,  # noqa
-            entities: Entities[Entity[MyComponent]],
+            entities: Entities[MyComponent],
         ):  # noqa
             pass
 
-        system_conf = ControlPanel.extract_args_from_system(system)
-        assert system_conf.command is True
-        assert MyResource in system_conf.resources
-        assert system_conf.resources[MyResource] == "resource"
-        assert system_conf.system == system
-        assert (MyComponent,) in system_conf.components
-        assert system_conf.components[(MyComponent,)] == "entities"
+        system_config = process_system_arguments(system)
+        assert system_config.commands == {Commands: "commands"}
+        assert MyResource in system_config.resources
+        assert system_config.resources[MyResource] == "resource"
+        assert system_config.callable == system
+        assert (MyComponent,) in system_config.components
+        assert system_config.components[(MyComponent,)] == "entities"
 
     def test_system_extraction_commands(
         self, my_control_panel, system_with_commands
     ):
-        system_conf = SystemConf(
-            command=True,
+        system_conf = SystemConfig(
+            commands={Commands: "commands"},
             components={},
-            system=system_with_commands,
+            callable=system_with_commands,
             resources={},
+            types=set(),
         )
+        my_control_panel.register_systems(system_with_commands)
         kwargs = my_control_panel._extract_system_input(system_conf)
         assert "commands" in kwargs
         assert len(kwargs) == 1
@@ -94,10 +96,10 @@ class TestControlPanel:
         my_control_panel.register_systems(
             system_with_entities, system_with_resource
         )
-        assert len(my_control_panel.get_systems()) == 2
-        my_control_panel._drop_systems(system_with_entities)
-        assert len(my_control_panel.get_systems()) == 1
-        assert system_with_resource in my_control_panel.get_systems()
+        assert len(my_control_panel.system_storage) == 2
+        my_control_panel._remove_system(system_with_entities)
+        assert len(my_control_panel.system_storage) == 1
+        assert system_with_resource in my_control_panel.system_storage.systems
 
     def test_system_deletion_scheduling(
         self, system_with_entities, system_with_resource, my_control_panel
@@ -105,12 +107,12 @@ class TestControlPanel:
         my_control_panel.register_systems(
             system_with_entities, system_with_resource
         )
-        assert len(my_control_panel.get_systems()) == 2
+        assert len(my_control_panel.system_storage) == 2
         my_control_panel.schedule_drop_systems(system_with_entities)
         assert len(my_control_panel._systems_to_drop) == 1
         my_control_panel._run_scheduled_drop_systems()
         assert len(my_control_panel._systems_to_drop) == 0
-        assert len(my_control_panel.get_systems()) == 1
+        assert len(my_control_panel.system_storage) == 1
 
     def test_system_deletion_scheduling_in_app(
         self,
@@ -123,20 +125,20 @@ class TestControlPanel:
             system_with_entities, system_with_resource
         )
         my_control_panel.register_resources(my_resource)
-        assert len(my_control_panel.get_systems()) == 2
+        assert len(my_control_panel.system_storage) == 2
         my_control_panel.schedule_drop_systems(system_with_entities)
         assert len(my_control_panel._systems_to_drop) == 1
         my_control_panel.tick()
         assert len(my_control_panel._systems_to_drop) == 0
-        assert len(my_control_panel.get_systems()) == 1
+        assert len(my_control_panel.system_storage) == 1
 
     def test_resource_deletion(
         self, my_control_panel, my_entity, my_component
     ):
         my_control_panel.register_entities(my_entity)
-        assert len(my_control_panel.get_entities()) == 1
-        my_control_panel.drop_entities(type(my_component))
-        assert len(my_control_panel.get_entities()) == 0
+        assert len(my_control_panel.entity_storage) == 1
+        my_control_panel.remove_entities(type(my_component))
+        assert len(my_control_panel.entity_storage) == 0
 
     def test_resource_deletion_expression(
         self,
@@ -147,11 +149,11 @@ class TestControlPanel:
         my_other_component,
     ):
         my_control_panel.register_entities(my_entity, my_entity_multiple)
-        assert len(my_control_panel.get_entities()) == 2
+        assert len(my_control_panel.entity_storage) == 2
         my_control_panel.drop_entities_with_expression(
             lambda entity: type(my_other_component) in entity
         )
-        assert len(my_control_panel.get_entities()) == 1
+        assert len(my_control_panel.entity_storage) == 1
 
     def test_request_specific_component(
         self,
@@ -161,19 +163,11 @@ class TestControlPanel:
         my_other_component,
     ):
         my_control_panel.register_entities(my_entity, my_entity_multiple)
-        entities = my_control_panel._query_entities(type(my_other_component))
+        entities = my_control_panel.entity_storage.get(
+            type(my_other_component)
+        )
         assert len(entities) == 1
         assert entities[0] == my_entity_multiple
-
-    def test_parser_with_entity_instead_of_entities(
-        self, my_entity, my_component
-    ):
-        def system(entity: Entity[type(my_component)]):
-            assert isinstance(entity, Entities)
-
-        system_conf = ControlPanel.extract_args_from_system(system)
-        assert (type(my_component),) in system_conf.components
-        assert system_conf.components[(type(my_component),)] == "entity"
 
     def test_plugins_register(
         self, my_control_panel, my_entity, my_resource, system_with_entities
@@ -185,9 +179,9 @@ class TestControlPanel:
             cp.register_systems(system_with_entities)
 
         my_control_panel.register_plugins(plugin)
-        assert len(my_control_panel.get_entities()) == 1
-        assert len(my_control_panel.get_resources()) == 1
-        assert len(my_control_panel.get_systems()) == 1
+        assert len(my_control_panel.entity_storage) == 1
+        assert len(my_control_panel.resource_storage) == 1
+        assert len(my_control_panel.system_storage) == 1
 
     def test_drop_specific_component(
         self,
@@ -197,8 +191,8 @@ class TestControlPanel:
         my_other_component,
     ):
         my_control_panel.register_entities(my_entity, my_entity_multiple)
-        my_control_panel.drop_entities(type(my_other_component))
-        assert len(my_control_panel.get_entities()) == 1
+        my_control_panel.remove_entities(type(my_other_component))
+        assert len(my_control_panel.entity_storage) == 1
 
     def test_drop_specific_component_with_expression(
         self,
@@ -211,7 +205,7 @@ class TestControlPanel:
         my_control_panel.drop_entities_with_expression(
             lambda entity: entity[type(my_other_component)].integer == 10
         )
-        assert len(my_control_panel.get_entities()) == 1
+        assert len(my_control_panel.entity_storage) == 1
 
     def test_stop_start_systems(self, my_control_panel, my_ticker):
         def system(resource: type(my_ticker)):
@@ -234,9 +228,4 @@ class TestControlPanel:
         assert my_ticker.tick == 2
 
     def test_repr(self, my_control_panel):
-        assert (
-            str(my_control_panel) == "ControlPanel\n"
-            "    Systems: {}\n"
-            "    Entities: {}\n"
-            "    Resources: {}"
-        )
+        assert str(my_control_panel) == "Control Panel"

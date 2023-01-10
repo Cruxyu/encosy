@@ -31,21 +31,21 @@ class PermanentResource(int):
     pass
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def my_component():
     integer = 10
     string = "row"
     return MyComponent(integer, string)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def my_entity():
     integer = 10
     string = "row"
     return Entity(MyComponent(integer, string))
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def my_entity_multiple():
     integer = 10
     string = "row"
@@ -54,30 +54,30 @@ def my_entity_multiple():
     )
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def my_other_component():
     integer = 10
     string = "row"
     return MyOtherComponent(integer, string)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def my_resource():
     return MyResource(1)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def my_ticker():
     return Ticker(0)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def my_control_panel():
     control_panel = ControlPanel()
     return control_panel
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def system_with_commands():
     def system(
         commands: Commands,
@@ -87,7 +87,7 @@ def system_with_commands():
     return system
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def system_with_entities():
     def system(entities: Entities[MyComponent]):
         assert isinstance(entities, Entities)
@@ -95,7 +95,7 @@ def system_with_entities():
     return system
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def system_with_resource():
     def system(
         resource: MyResource,
@@ -105,7 +105,7 @@ def system_with_resource():
     return system
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def system_with_pause():
     def system(
         commands: Commands,
@@ -115,7 +115,7 @@ def system_with_pause():
     return system
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def system_with_resume():
     def system(
         commands: Commands,

@@ -1,6 +1,7 @@
 import random
 from dataclasses import dataclass
 from time import sleep
+
 from encosy import Commands, ControlPanel, Entities, Entity
 
 
@@ -36,7 +37,7 @@ class SleepTime(float):
 Human = Name
 
 # bundle
-Chair = Reserved | VIP
+Chair = Reserved, VIP
 
 
 def entry_sys(commands: Commands, chairs: Entities[Chair]):
@@ -64,7 +65,7 @@ def gen_random(names_idx: int):
 
 def fake_entry_sys(commands: Commands, chairs: Entities[Chair]):
     global names_idx
-    new_total = random.randint(1, 100)
+    new_total = random.randint(1, 3)
     hv = [gen_random(names_idx + i) for i in range(new_total)]
     names_idx += new_total
     for human, vip in hv:
@@ -72,7 +73,7 @@ def fake_entry_sys(commands: Commands, chairs: Entities[Chair]):
             if chair[Reserved].reserved <= 0 and chair[VIP] == int(vip):
                 # print("Sure, we can serve a chair for you!")
                 commands.register_entities(human)
-                chair[Reserved].reserved = random.randint(1, 1250)
+                chair[Reserved].reserved = random.randint(1, 10)
                 break
     # else:
     #     print("You a looser, bye!")
@@ -104,7 +105,7 @@ def print_sys(tick: Tick, chairs: Entities[Chair], humans: Entities[Human]):
         print(
             "    {}. Chair{} is {}".format(
                 k,
-                " VIP" if chair[1] else "",
+                " VIP" if chair[VIP] else "",
                 "Reserved for {}".format(chair[Reserved].reserved)
                 if chair[Reserved].reserved > 0
                 else "Not Reserved",
@@ -122,16 +123,12 @@ def sleep_system(sleet_time: SleepTime):
 def main():
     # print("Starting...")
     ControlPanel().register_resources(
-        Tick(0, 10000), SleepTime(1.0)
+        Tick(0, 100), SleepTime(0.1)
     ).register_systems(
-        tick_sys,
-        # print_sys,
-        exit_sys,
-        fake_entry_sys,
-        # sleep_system
+        tick_sys, print_sys, exit_sys, fake_entry_sys, sleep_system
     ).register_entities(
-        *[Entity(Reserved(0), VIP(0)) for _ in range(10000)],
-        *[Entity(Reserved(0), VIP(1)) for _ in range(1000)],
+        *[Entity(Reserved(0), VIP(0)) for _ in range(10)],
+        *[Entity(Reserved(0), VIP(1)) for _ in range(1)],
         Entity(Reserved(2), VIP(1)),
         Entity(Name("Artyom")),
     ).run()
