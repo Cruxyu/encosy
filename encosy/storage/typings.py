@@ -41,7 +41,7 @@ class Entities(list[Entity[T]]):
 
 
 class Commands:
-    def __init__(self, control_panel: 'ControlPanel'):
+    def __init__(self, control_panel):
         """
         Commands layer to use control panel inside a system
 
