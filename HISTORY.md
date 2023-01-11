@@ -4,6 +4,26 @@ Changelog
 
 (unreleased)
 ------------
+- V2.1. [baranynah]
+- Merge pull request #10 from Cruxyu/runner_impl. [Cruxyu]
+
+  Runner impl
+- Integrate runner into control panel. [baranynah]
+- Implement default runner and parallel (beta) [baranynah]
+- Added runner meta. [baranynah]
+- Merge pull request #9 from Cruxyu/update_memory_and_lint. [Cruxyu]
+
+  Update memory and lint
+- Added ruff cache to clean. [baranynah]
+- Added ruff fmt. [baranynah]
+- Added ruff to clean and lint. [baranynah]
+- Add config for ruff. [baranynah]
+- Add new dependency (ruff and memray) [baranynah]
+
+
+2.0.1 (2023-01-10)
+------------------
+- Release: version 2.0.1 🚀 [baranynah]
 - V2. [baranynah]
 - Merge pull request #8 from Cruxyu/storage_for_entitites_system.
   [Cruxyu]
