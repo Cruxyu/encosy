@@ -10,6 +10,8 @@ from .storage import (
 )
 from .storage.typings import Commands, Entity, SystemConfig
 
+from .runner import DefaultRunner, RunnerMeta
+
 
 class ControlPanel:
     def __init__(
@@ -17,6 +19,7 @@ class ControlPanel:
         system_storage: SystemStorageMeta | None = None,
         entity_storage: EntityStorageMeta | None = None,
         resource_storage: ResourceStorageMeta | None = None,
+        runner: RunnerMeta | None = None,
     ):
         """
         ECS control panel
@@ -27,9 +30,13 @@ class ControlPanel:
             entity_storage = DefaultEntityStorage()
         if resource_storage is None:
             resource_storage = DefaultResourceStorage()
+        if runner is None:
+            runner = DefaultRunner()
+
         self.system_storage = system_storage
         self.entity_storage = entity_storage
         self.resource_storage = resource_storage
+        self.runner = runner
 
         self._systems_to_drop: dict[Callable[[Any], Any], None] = {}
         self._systems_stop: dict[Callable[[Any], Any], None] = {}
@@ -200,6 +207,14 @@ class ControlPanel:
             )
         return key_word_arguments
 
+    def _function_generator(self):
+        for system_config in self.system_storage.get_all():
+            if system_config.callable in self._systems_stop:
+                continue
+            yield lambda: system_config.callable(
+                **self._extract_system_input(system_config)
+            )
+
     def tick(self) -> bool:
         """
         Equivalent to one step where each system
@@ -211,10 +226,7 @@ class ControlPanel:
         """
         if self._stop:
             return False
-        for system_config in self.system_storage.get_all():
-            if system_config.callable in self._systems_stop:
-                continue
-            system_config.callable(**self._extract_system_input(system_config))
+        self.runner.run(self._function_generator())
         self._run_scheduled_drop_systems()
         return True
 
