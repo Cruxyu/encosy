@@ -11,6 +11,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
+mkdocstrings = "^0.19.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -32,6 +33,7 @@ isort = "^5.10.1"
 codecov = "^2.1.12"
 mkdocs-material = "^8.5.11"
 pytest-timeout = "^2.1.0"
+mkdocstrings-python = "^0.8.3"
 
 
 [tool.poetry.group.mem.dependencies]
