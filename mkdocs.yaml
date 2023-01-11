@@ -1,15 +1,24 @@
-site_name: pyECS
+site_name: EnCoSy
 
 theme:
   name: material
 
+plugins:
+- mkdocstrings:
+    handlers:
+      python:
+        paths:
+          - ./encosy
+
 nav:
   - Home: index.md
   - API:
-    - Distributor: api/distributor.md
-    - Commands: api/commands.md
-    - System: api/system.md
-    - Entity: api/entity.md
-    - Component: api/component.md
+    - Control Panel: api/control_panel.md
+    - Types: api/typings.md
+    - Runner: api/runner.md
+    - Storage:
+      - System: api/system.md
+      - Entity: api/entity.md
+      - Resource: api/resource.md
   - About: about.md
   - License: license.md

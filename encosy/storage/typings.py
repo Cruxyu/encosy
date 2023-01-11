@@ -21,7 +21,8 @@ class Entity(dict[type, T]):
         If duplicated types passed no error will be raised
         instead duplicate value replace existing one
 
-        :param components: accumulative of any type component
+        Args:
+            *components: any items
         """
         super().__init__({type(com): com for com in components})
 
@@ -43,81 +44,119 @@ class Commands:
     def __init__(self, control_panel):
         """
         Commands layer to use control panel inside a system
-        :param control_panel:
+
+        Args:
+            control_panel:
         """
         self._control_panel = control_panel
 
-    def register_entities(self, *entities):
+    def register_entities(self, *entities) -> 'Commands':
         """
         Register entities for control panel
-        :param entities:
-        :return: self | Commands
+
+        Args:
+            *entities: any entities
+
+        Returns:
+            self
+
         """
         self._control_panel.register_entities(*entities)
         return self
 
-    def drop_entities(self, *components):
+    def drop_entities(self, *components) -> 'Commands':
         """
         Drop entities by components
-        :param components:
-        :return: self | Commands
+
+        Args:
+            *components: drop entities by components
+
+        Returns:
+            self
+
         """
         self._control_panel.remove_entities(*components)
         return self
 
-    def drop_entities_with_expression(self, expression: Callable[[Any], Any]):
+    def drop_entities_with_expression(self, expression: Callable[[Any], Any]) -> 'Commands':
         """
         Drop entities using expression of type (entity: Entity) -> bool
         ex:
             lambda entity: entity[Position].x == 17.0
                             and entity[Position].y == 21.0
             where Position is a component of a given entity
-        :param expression: ()[[Entity], bool]
-        :return: self | Commands
+
+        Args:
+            expression: (Entity) -> True or False
+
+        Returns:
+            self
+
         """
         self._control_panel.drop_entities_with_expression(expression)
         return self
 
-    def stop_systems(self, *systems):
+    def stop_systems(self, *systems) -> 'Commands':
         """
         Prevents systems from executing
-        :param systems:
-        :return: self | Commands
+
+        Args:
+            *systems: any callable
+
+        Returns:
+            self
+
         """
         self._control_panel.stop_systems(*systems)
         return self
 
-    def start_systems(self, *systems):
+    def start_systems(self, *systems) -> 'Commands':
         """
         Allows systems to be executed
-        :param systems:
-        :return: self | Commands
+
+        Args:
+            *systems: any callable
+
+        Returns:
+            self
+
         """
         self._control_panel.start_systems(*systems)
         return self
 
-    def schedule_drop_systems(self, *systems):
+    def schedule_drop_systems(self, *systems) -> 'Commands':
         """
         Completely remove system, but only after current tick
-        :param systems:
-        :return: self | Commands
+
+        Args:
+            *systems: any callable
+
+        Returns:
+            self
+
         """
         self._control_panel.schedule_drop_systems(*systems)
         return self
 
-    def pause_control_panel(self):
+    def pause_control_panel(self) -> 'Commands':
         """
         Exits from run at the next tick and prevents tick to be executed
         until resume_control_panel is called
-        :return: self | Commands
+
+        Returns:
+            self
+
         """
         self._control_panel.pause()
         return self
 
-    def resume_control_panel(self):
+    def resume_control_panel(self) -> 'Commands':
         """
         Resume run but only after control_panel.run() is called
-        :return: self | Commands
+
+        Returns:
+            self
+
         """
         self._control_panel.resume()
         return self

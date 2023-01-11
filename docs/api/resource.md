@@ -5,9 +5,8 @@ Control Panel is used as an entry point to ECS storages and runner.
 # API
 ## Meta
 
-::: encosy.storage.meta.SystemStorageMeta
+::: encosy.storage.meta.ResourceStorageMeta
 
+## ResourceStorage
 
-## SystemStorage
-
-::: encosy.storage.system_storage
+::: encosy.storage.resource_storage

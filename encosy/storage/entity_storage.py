@@ -9,12 +9,31 @@ class SimpleEntityStorage(EntityStorageMeta):
         self.idx = 0
         self.entities: dict[int, Entity] = {}
 
-    def add(self, entity: Entity):
+    def add(self, entity: Entity) -> 'SimpleEntityStorage':
+        """
+        Add entity to storage
+        Args:
+            entity: Any Entity with Any component
+
+        Returns:
+            self
+
+        """
         self.idx += 1
         self.entities[self.idx] = entity
         return self
 
-    def remove(self, entity: Entity):
+    def remove(self, entity: Entity) -> 'SimpleEntityStorage':
+        """
+        Remove entity from storage works iteratively
+
+        Args:
+            entity: works by comparison of existing entity and new
+
+        Returns:
+            self
+
+        """
         key_to_del = 0
         for key, entity_to_del in self.entities.items():
             if entity_to_del == entity:
@@ -27,7 +46,17 @@ class SimpleEntityStorage(EntityStorageMeta):
     def query(self, *args, **kwargs):
         pass
 
-    def get(self, *types):
+    def get(self, *types: type) -> Entities[Any]:
+        """
+        Query entities by component types
+
+        Args:
+            *types: types of components
+
+        Returns:
+            entities with given components
+
+        """
         entities: Entities[Any] = Entities()
         components = set(types)
         for entity in self.entities.values():
@@ -35,7 +64,16 @@ class SimpleEntityStorage(EntityStorageMeta):
                 entities.append(entity)
         return entities
 
-    def query_expression(self, expression: Callable[[Entity], Any]):
+    def query_expression(self, expression: Callable[[Entity], Any]) -> Entities[Any]:
+        """
+        Query entities by expression
+
+        Args:
+            expression: expression of type (Entity) -> True or False
+
+        Returns:
+            entities
+        """
         entities: Entities[Any] = Entities()
         for entity in self.entities.values():
             try:

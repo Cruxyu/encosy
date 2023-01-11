@@ -1,5 +1,6 @@
-from typing import Any, Callable
+from typing import Any, Callable, Generator
 
+from .runner import DefaultRunner, RunnerMeta
 from .storage import (
     DefaultEntityStorage,
     DefaultResourceStorage,
@@ -9,8 +10,6 @@ from .storage import (
     SystemStorageMeta,
 )
 from .storage.typings import Commands, Entity, SystemConfig
-
-from .runner import DefaultRunner, RunnerMeta
 
 
 class ControlPanel:
@@ -23,7 +22,17 @@ class ControlPanel:
     ):
         """
         ECS control panel
+
+        Each storage unit represents and fulfill the purpose for distributing
+        storing and querying items that associate with it
+
+        Args:
+            system_storage: Object that implements SystemStorageMeta
+            entity_storage: Object that implements ResourceStorageMeta
+            resource_storage: Object that implements ResourceStorageMeta
+            runner: Object that implements RunnerMeta
         """
+
         if system_storage is None:
             system_storage = DefaultSystemStorage()
         if entity_storage is None:
@@ -44,67 +53,102 @@ class ControlPanel:
 
         self._commands = Commands(self)
 
-    def register_systems(self, *systems: Callable[[Any], Any]):
+    def register_systems(
+        self, *systems: Callable[[Any], Any]
+    ) -> "ControlPanel":
         """
         Register any Callable.
         Input params of function can contain:
-            commands: Commands (name and type is reserved)
-            resource: Any - same as entity, but only one can exist
-            entity: Entity[ComponentType1, ComponentType2, ...]
-        :param systems: Callable
-        :return: self | ControlPanel
+            - commands: Commands (name and type is reserved)
+            - resource: Any - same as entity, but only one can exist
+            - entity: Entity[ComponentType1, ComponentType2, ...]
+
+        Args:
+            *systems: Callable that contain definition or typing for input
+                [Commands, Entities[ ListOfComponents ], Any],
+                Any is considered as resource
+
+        Returns:
+            self
         """
         for system in systems:
             self.system_storage.add(system)
         return self
 
-    def register_resources(self, *resources: Any):
+    def register_resources(self, *resources: Any) -> "ControlPanel":
         """
         Register resources. Each resource should be unique type
         as it is accessed through it
-        :param resources: object of eny type
-        :return: self | ControlPanel
+
+        Args:
+            *resources: Object of any type
+
+        Returns:
+            self
         """
         for resource in resources:
             self.resource_storage.add(resource)
         return self
 
-    def register_entities(self, *entities):
+    def register_entities(self, *entities: Any) -> "ControlPanel":
         """
         Register entity. Each entity assigned a unique integer
-        :param entities: Entity with components
-        :return: self | ControlPanel
+
+        Args:
+            *entities: Entity of any type that suits entity_storage.add
+                by default the type is 'Entity'
+
+        Returns:
+            self
+
         """
         for entity in entities:
             self.entity_storage.add(entity)
         return self
 
-    def register_plugins(self, *plugins: Callable[["ControlPanel"], Any]):
+    def register_plugins(
+        self, *plugins: Callable[["ControlPanel"], Any]
+    ) -> "ControlPanel":
         """
         Register plugins. Plugin is a simple function that takes ControlPanel
-        :param plugins: ()[[ControlPanel]], None]
-        :return: self | ControlPanel
+
+        Args:
+            *plugins: simple function to that takes ControlPanel and apply
+                onto self immediately
+
+        Returns:
+            self
+
         """
         for plugin in plugins:
             plugin(self)
         return self
 
-    def _remove_system(self, *systems: Callable[[Any], Any]):
+    def _remove_system(self, *systems: Callable[[Any], Any]) -> "ControlPanel":
         """
         Drop given systems
-        :param systems: ()
-        :return: self | ControlPanel
+
+        Args:
+            *systems: same callable as in system register
+
+        Returns:
+            self
+
         """
         for system in systems:
             self.system_storage.remove(system)
         return self
 
-    def remove_entities(self, *component_types: type):
+    def remove_entities(self, *component_types: type) -> "ControlPanel":
         """
         Drop entities based on its components types
-        :param component_types: type that entity should contain
-        in order to be dropped
-        :return: self | ControlPanel
+
+        Args:
+            *component_types: remove entities by type of components
+
+        Returns:
+            self
+
         """
         entities = self.entity_storage.get(*component_types)
         for entity in entities:
@@ -113,75 +157,107 @@ class ControlPanel:
 
     def drop_entities_with_expression(
         self, expression: Callable[[Entity], bool]
-    ):
+    ) -> "ControlPanel":
         """
         Drops entities based on expression of type (entity: Entity) -> bool
         Ex:
-            lambda entity: Entity[Name] == "MyName"
-        :param expression: ()[[Entity], bool]
-        :return: self | ControlPanel
+            - lambda entity: Entity[Name] == "MyName"
+
+        Args:
+            expression: callable that takes entity as input and return if it is
+                True or False
+
+        Returns:
+            self
+
         """
         entities = self.entity_storage.query_expression(expression)
         for entity in entities:
             self.entity_storage.remove(entity)
         return self
 
-    def stop_systems(self, *systems: Callable[[Any], Any]):
+    def stop_systems(self, *systems: Callable[[Any], Any]) -> "ControlPanel":
         """
         Add systems to stop dictionary
-        :param systems: ()
-        :return: self | ControlPanel
+
+        Args:
+            *systems: used as hash to stop system
+
+        Returns:
+            self
+
         """
         for system in systems:
             self._systems_stop[system] = None
         return self
 
-    def start_systems(self, *systems: Callable[[Any], Any]):
+    def start_systems(self, *systems: Callable[[Any], Any]) -> "ControlPanel":
         """
         Remove systems from stop dictionary
-        :param systems: ()
-        :return: self | ControlPanel
+
+        Args:
+            *systems: used as hash to resume systems
+
+        Returns:
+            self
+
         """
         for system in systems:
             if system in self._systems_stop:
                 self._systems_stop.pop(system)
         return self
 
-    def schedule_drop_systems(self, *systems: Callable[[Any], Any]):
+    def schedule_drop_systems(
+        self, *systems: Callable[[Any], Any]
+    ) -> "ControlPanel":
         """
         Schedules drop of a given systems
         Add system to drop queue and call _run_scheduled_drop_systems
         at the end of a tick
-        :param systems: ()
-        :return: self | ControlPanel
+
+        Args:
+            *systems: used as hash to drop system from storage
+
+        Returns:
+            self
+
         """
         for system in systems:
             self._systems_to_drop[system] = None
         return self
 
-    def _run_scheduled_drop_systems(self):
+    def _run_scheduled_drop_systems(self) -> "ControlPanel":
         """
         Runs drop on a system drop queue and clear it
-        :return: self | ControlPanel
+
+        Returns:
+            self
+
         """
         self._remove_system(*self._systems_to_drop.keys())
         self._systems_to_drop = {}
         return self
 
-    def pause(self):
+    def pause(self) -> "ControlPanel":
         """
-        Set a pause for a tick function (stop = True).
-        stop works as a gate in tick function
-        :return: self | ControlPanel
+        Set a pause for a tick function (stop = True). Stop works as a gate
+        in tick function
+
+        Returns:
+            self
+
         """
         self._stop = True
         return self
 
-    def resume(self):
+    def resume(self) -> "ControlPanel":
         """
         Set a resume for a tick function (stop = False).
         stop works as a gate in tick function
-        :return: self | ControlPanel
+
+        Returns:
+            self
+
         """
         self._stop = False
         return self
@@ -192,8 +268,12 @@ class ControlPanel:
         """
         Extracts input values for given system and returns basic kwargs
         If any of the resources does not exist or isn't registered - KeyError
-        :param system_config: system params
-        :return: dict[str, Any] - aka kwargs
+
+        Args:
+            system_config: to connects storages with systems using defined class
+
+        Returns:
+            key word arguments or kwargs
         """
         key_word_arguments: dict[str, Any] = {}
         system_config = self.system_storage.get(system_config.callable)
@@ -207,7 +287,14 @@ class ControlPanel:
             )
         return key_word_arguments
 
-    def _function_generator(self):
+    def _function_generator(self) -> Generator:
+        """
+        Generator for runner
+
+        Returns:
+            generator of functions
+
+        """
         for system_config in self.system_storage.get_all():
             if system_config.callable in self._systems_stop:
                 continue
@@ -217,12 +304,14 @@ class ControlPanel:
 
     def tick(self) -> bool:
         """
-        Equivalent to one step where each system
+        By default, equivalent to one step where each system
         in a given order (register_system(1->2->3->...) executes
         with a requested params [Any, Commands, Entities(list[tuple[Any]]])
         If requested resource does not exist then KeyError raised
-        :return: bool returns False if Dispenser.pause()
-        called to resume call .resume()
+
+        Returns:
+            False if stopped and True if not
+
         """
         if self._stop:
             return False
@@ -230,12 +319,14 @@ class ControlPanel:
         self._run_scheduled_drop_systems()
         return True
 
-    def run(self):
+    def run(self) -> "ControlPanel":
         """
         Simple loop for executing ticks until commands.pause()
-        called within any system
-        then after current tick new won't start
-        :return: self | ControlPanel
+        called within any system then after current tick new won't start
+
+        Returns:
+            self
+
         """
         self.resume()
         while self.tick():
