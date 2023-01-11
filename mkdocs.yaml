@@ -14,7 +14,7 @@ nav:
   - Home: index.md
   - API:
     - Control Panel: api/control_panel.md
-    - Types: api/types.md
+    - Types: api/typings.md
     - Runner: api/runner.md
     - Storage:
       - System: api/system.md
