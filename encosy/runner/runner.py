@@ -1,6 +1,7 @@
-from .meta import RunnerMeta
-from typing import Iterable, Callable
 from multiprocessing import Process
+from typing import Callable, Iterable
+
+from .meta import RunnerMeta
 
 
 class SimpleRunner(RunnerMeta):

@@ -1,5 +1,6 @@
 from typing import Any, Callable, Generator
 
+from .runner import DefaultRunner, RunnerMeta
 from .storage import (
     DefaultEntityStorage,
     DefaultResourceStorage,
@@ -9,8 +10,6 @@ from .storage import (
     SystemStorageMeta,
 )
 from .storage.typings import Commands, Entity, SystemConfig
-
-from .runner import DefaultRunner, RunnerMeta
 
 
 class ControlPanel:
@@ -54,14 +53,16 @@ class ControlPanel:
 
         self._commands = Commands(self)
 
-    def register_systems(self, *systems: Callable[[Any], Any]) -> 'ControlPanel':
+    def register_systems(
+        self, *systems: Callable[[Any], Any]
+    ) -> "ControlPanel":
         """
         Register any Callable.
         Input params of function can contain:
             - commands: Commands (name and type is reserved)
             - resource: Any - same as entity, but only one can exist
             - entity: Entity[ComponentType1, ComponentType2, ...]
-    
+
         Args:
             *systems: Callable that contain definition or typing for input
                 [Commands, Entities[ ListOfComponents ], Any],
@@ -74,7 +75,7 @@ class ControlPanel:
             self.system_storage.add(system)
         return self
 
-    def register_resources(self, *resources: Any) -> 'ControlPanel':
+    def register_resources(self, *resources: Any) -> "ControlPanel":
         """
         Register resources. Each resource should be unique type
         as it is accessed through it
@@ -89,7 +90,7 @@ class ControlPanel:
             self.resource_storage.add(resource)
         return self
 
-    def register_entities(self, *entities: Any) -> 'ControlPanel':
+    def register_entities(self, *entities: Any) -> "ControlPanel":
         """
         Register entity. Each entity assigned a unique integer
 
@@ -105,7 +106,9 @@ class ControlPanel:
             self.entity_storage.add(entity)
         return self
 
-    def register_plugins(self, *plugins: Callable[["ControlPanel"], Any]) -> 'ControlPanel':
+    def register_plugins(
+        self, *plugins: Callable[["ControlPanel"], Any]
+    ) -> "ControlPanel":
         """
         Register plugins. Plugin is a simple function that takes ControlPanel
 
@@ -121,7 +124,7 @@ class ControlPanel:
             plugin(self)
         return self
 
-    def _remove_system(self, *systems: Callable[[Any], Any]) -> 'ControlPanel':
+    def _remove_system(self, *systems: Callable[[Any], Any]) -> "ControlPanel":
         """
         Drop given systems
 
@@ -136,7 +139,7 @@ class ControlPanel:
             self.system_storage.remove(system)
         return self
 
-    def remove_entities(self, *component_types: type) -> 'ControlPanel':
+    def remove_entities(self, *component_types: type) -> "ControlPanel":
         """
         Drop entities based on its components types
 
@@ -154,7 +157,7 @@ class ControlPanel:
 
     def drop_entities_with_expression(
         self, expression: Callable[[Entity], bool]
-    ) -> 'ControlPanel':
+    ) -> "ControlPanel":
         """
         Drops entities based on expression of type (entity: Entity) -> bool
         Ex:
@@ -173,7 +176,7 @@ class ControlPanel:
             self.entity_storage.remove(entity)
         return self
 
-    def stop_systems(self, *systems: Callable[[Any], Any]) -> 'ControlPanel':
+    def stop_systems(self, *systems: Callable[[Any], Any]) -> "ControlPanel":
         """
         Add systems to stop dictionary
 
@@ -188,7 +191,7 @@ class ControlPanel:
             self._systems_stop[system] = None
         return self
 
-    def start_systems(self, *systems: Callable[[Any], Any]) -> 'ControlPanel':
+    def start_systems(self, *systems: Callable[[Any], Any]) -> "ControlPanel":
         """
         Remove systems from stop dictionary
 
@@ -204,7 +207,9 @@ class ControlPanel:
                 self._systems_stop.pop(system)
         return self
 
-    def schedule_drop_systems(self, *systems: Callable[[Any], Any]) -> 'ControlPanel':
+    def schedule_drop_systems(
+        self, *systems: Callable[[Any], Any]
+    ) -> "ControlPanel":
         """
         Schedules drop of a given systems
         Add system to drop queue and call _run_scheduled_drop_systems
@@ -221,7 +226,7 @@ class ControlPanel:
             self._systems_to_drop[system] = None
         return self
 
-    def _run_scheduled_drop_systems(self) -> 'ControlPanel':
+    def _run_scheduled_drop_systems(self) -> "ControlPanel":
         """
         Runs drop on a system drop queue and clear it
 
@@ -233,7 +238,7 @@ class ControlPanel:
         self._systems_to_drop = {}
         return self
 
-    def pause(self) -> 'ControlPanel':
+    def pause(self) -> "ControlPanel":
         """
         Set a pause for a tick function (stop = True). Stop works as a gate
         in tick function
@@ -245,7 +250,7 @@ class ControlPanel:
         self._stop = True
         return self
 
-    def resume(self) -> 'ControlPanel':
+    def resume(self) -> "ControlPanel":
         """
         Set a resume for a tick function (stop = False).
         stop works as a gate in tick function
@@ -314,7 +319,7 @@ class ControlPanel:
         self._run_scheduled_drop_systems()
         return True
 
-    def run(self) -> 'ControlPanel':
+    def run(self) -> "ControlPanel":
         """
         Simple loop for executing ticks until commands.pause()
         called within any system then after current tick new won't start

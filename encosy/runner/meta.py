@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Iterable, Callable
+from typing import Callable, Iterable
 
 
 class RunnerMeta(metaclass=ABCMeta):
