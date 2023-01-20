@@ -50,7 +50,7 @@ class Commands:
         """
         self._control_panel = control_panel
 
-    def register_entities(self, *entities) -> 'Commands':
+    def register_entities(self, *entities) -> list[Any]:
         """
         Register entities for control panel
 
@@ -61,8 +61,7 @@ class Commands:
             self
 
         """
-        self._control_panel.register_entities(*entities)
-        return self
+        return self._control_panel.register_entities(*entities)
 
     def drop_entities(self, *components) -> 'Commands':
         """

@@ -54,7 +54,7 @@ class ControlPanel:
         self._commands = Commands(self)
 
     def register_systems(
-        self, *systems: Callable[[Any, ...], Any]
+        self, *systems: Callable[[Any], Any]
     ) -> "ControlPanel":
         """
         Register any Callable.
