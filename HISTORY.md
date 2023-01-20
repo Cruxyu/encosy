@@ -4,6 +4,24 @@ Changelog
 
 (unreleased)
 ------------
+- Version 3.0.0. [baranynah]
+- Fix commands and linter. [baranynah]
+- Added id and notebooks and profile stats. [baranynah]
+- Merge pull request #11 from Cruxyu/documentation_update. [Cruxyu]
+
+  Documentation update
+- Remove annotation. [baranynah]
+- Docs new. [baranynah]
+- Fix typo. [baranynah]
+- Initial setup of docs. [baranynah]
+- Lint changes. [baranynah]
+- Control panel docs. [baranynah]
+- Added plugin for autodocs. [baranynah]
+
+
+2.1.0 (2023-01-11)
+------------------
+- Release: version 2.1.0 🚀 [baranynah]
 - V2.1. [baranynah]
 - Merge pull request #10 from Cruxyu/runner_impl. [Cruxyu]
 
