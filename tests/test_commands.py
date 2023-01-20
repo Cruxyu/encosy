@@ -8,7 +8,8 @@ class TestCommands:
         def system(commands: Commands):
             commands.register_entities(my_entity_multiple)
 
-        my_control_panel.register_entities(my_entity).register_systems(system)
+        my_control_panel.register_entities(my_entity)
+        my_control_panel.register_systems(system)
         assert len(my_control_panel.entity_storage) == 1
         my_control_panel.tick()
         assert len(my_control_panel.entity_storage) == 2
@@ -25,7 +26,8 @@ class TestCommands:
 
         my_control_panel.register_entities(
             my_entity, my_entity_multiple
-        ).register_systems(system)
+        )
+        my_control_panel.register_systems(system)
         assert len(my_control_panel.entity_storage) == 2
         my_control_panel.tick()
         assert len(my_control_panel.entity_storage) == 1
@@ -44,7 +46,8 @@ class TestCommands:
 
         my_control_panel.register_entities(
             my_entity, my_entity_multiple
-        ).register_systems(system)
+        )
+        my_control_panel.register_systems(system)
         assert len(my_control_panel.entity_storage) == 2
         my_control_panel.tick()
         assert len(my_control_panel.entity_storage) == 1
@@ -62,7 +65,8 @@ class TestCommands:
         def system_start(commands: Commands):
             commands.start_systems(system_with_entities)
 
-        my_control_panel.register_entities(my_entity).register_systems(
+        my_control_panel.register_entities(my_entity)
+        my_control_panel.register_systems(
             system_stop, system_with_entities
         )
         assert len(my_control_panel._systems_stop) == 0
@@ -84,7 +88,8 @@ class TestCommands:
         def system(commands: Commands):
             commands.schedule_drop_systems(system_with_entities)
 
-        my_control_panel.register_entities(my_entity).register_systems(
+        my_control_panel.register_entities(my_entity)
+        my_control_panel.register_systems(
             system, system_with_entities
         )
         assert len(my_control_panel.system_storage) == 2

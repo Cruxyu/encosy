@@ -54,7 +54,7 @@ class ControlPanel:
         self._commands = Commands(self)
 
     def register_systems(
-        self, *systems: Callable[[Any], Any]
+        self, *systems: Callable[[Any, ...], Any]
     ) -> "ControlPanel":
         """
         Register any Callable.
@@ -90,7 +90,7 @@ class ControlPanel:
             self.resource_storage.add(resource)
         return self
 
-    def register_entities(self, *entities: Any) -> "ControlPanel":
+    def register_entities(self, *entities: Any) -> list[Any]:
         """
         Register entity. Each entity assigned a unique integer
 
@@ -99,12 +99,10 @@ class ControlPanel:
                 by default the type is 'Entity'
 
         Returns:
-            self
+            list of idx but not strict to it
 
         """
-        for entity in entities:
-            self.entity_storage.add(entity)
-        return self
+        return [self.entity_storage.add(entity) for entity in entities]
 
     def register_plugins(
         self, *plugins: Callable[["ControlPanel"], Any]

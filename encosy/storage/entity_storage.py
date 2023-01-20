@@ -9,19 +9,30 @@ class SimpleEntityStorage(EntityStorageMeta):
         self.idx = 0
         self.entities: dict[int, Entity] = {}
 
-    def add(self, entity: Entity) -> 'SimpleEntityStorage':
+    def add(self, entity: Entity) -> int:
         """
         Add entity to storage
         Args:
             entity: Any Entity with Any component
 
         Returns:
-            self
+            id of an entity
 
         """
         self.idx += 1
         self.entities[self.idx] = entity
-        return self
+        return self.idx
+
+    def remove_by_id(self, idx: int) -> Entity:
+        """
+        Simply remove by id
+        Args:
+            idx: id of an entity
+
+        Returns:
+            entity itself
+        """
+        return self.entities.pop(idx)
 
     def remove(self, entity: Entity) -> 'SimpleEntityStorage':
         """

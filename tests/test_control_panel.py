@@ -24,10 +24,10 @@ class TestControlPanel:
                 ), "Entity values are not valid"
 
             assert my_resource.count == 1, "Resource values are not valid"
-
+        
+        my_control_panel.register_entities(entity)
         dist = (
-            my_control_panel.register_entities(entity)
-            .register_systems(my_system)
+            my_control_panel.register_systems(my_system)
             .register_resources(resource)
         )
         assert len(dist.system_storage) == 1, "Systems amount is not valid"

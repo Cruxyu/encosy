@@ -4,7 +4,7 @@ from .meta import SystemStorageMeta
 from .typings import Commands, Entities, SystemConfig
 
 
-def process_system_arguments(system: Callable[[Any], Any]) -> SystemConfig:
+def process_system_arguments(system: Callable[[Any, ...], Any]) -> SystemConfig:
     """
     Simple function to create system configuration using __annotations__
     and get_attr -> __origin__
